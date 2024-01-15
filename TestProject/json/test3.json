@@ -1,0 +1,15 @@
+{
+    "type": "scene",
+
+    "obj": 
+    [
+        {"use": "test","class": "TestObject", "pos": [40, 50], "name" : "test", "tag": "Test", "path": "sample.png", "layer":5, "speed": 7},
+        {"use": "test","class": "TestBG", "pos" : [0,0], "name" : "bg", "tag": "bg", "path" : "bg_sample.png", "layer":0},
+        {"use": "test","class": "TestGoal", "pos" : [500,30], "name" : "goal", "tag": "goal", "path" : "bg_sample3.png", "layer":0}
+    ],
+    "grp":
+    [
+        
+    ]
+
+}

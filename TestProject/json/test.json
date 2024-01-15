@@ -1,0 +1,15 @@
+{
+"type": "scene",
+
+"obj":
+    [
+        {"use": "test","class": "TestObject", "pos": [20, 12], "name" : "test", "tag": "Test", "path": "sample.png" , "speed": 5},
+        {"use": "test","class": "TestObject", "pos": [60, 60], "name" : "test2", "tag": "Test", "path": "sample.png"},
+        {"use": "test","class": "TestBG", "pos": [0,0], "name" : "testbg", "tag": "Test", "path": "bg_sample2.png"}
+    ],
+"grp":
+    [
+        
+    ]
+
+}

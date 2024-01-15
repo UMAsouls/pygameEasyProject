@@ -1,0 +1,17 @@
+{
+    "type": "scene",
+
+    "obj": 
+    [
+        {"use": "test", "class": "TestObject", "pos": [900, 1000], "name" : "test", "tag": "Test", "path": "sample.png", "layer":5, "speed": 7},
+        {"use": "test", "class": "TestBG", "pos" : [0,0], "name" : "bg", "tag": "bg", "path" : "bg_sample.png", "layer":0},
+        {"use": "test", "class": "TestBat", "pos":[0,0], "name":"bat","tag":"Bat","path":"bat.png","layer":6, "speed":7},
+        {"use": "test", "class": "TestGoal", "pos" : [1000,20], "name" : "goal", "tag": "goal", "path" : "bg_sample3.png", "layer":0},
+        {"use": "test", "class": "TestBullet", "pos" : [1000,20], "name" : "ball", "tag": "ball", "path" : "bg_sample3.png", "layer":0}
+    ],
+    "grp":
+    [
+        
+    ]
+
+}

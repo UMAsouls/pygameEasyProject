@@ -1,0 +1,68 @@
+{
+    "type": "scene",
+
+    "obj": 
+    [
+        {
+            "use": "shooting",
+            "class": "Title",
+            "pos": [0,0],
+            "name": "title",
+            "tag" :"background",
+            "path": "title.png",
+            "layer": 3
+        },
+
+        {
+            "use": "shooting",
+            "class": "TitleText1",
+            "pos": [530,500],
+            "name": "text1",
+            "tag" :"taxt1",
+            "layer": 5,
+            "text": "2 PLAYER GAME",
+            "text_size": 50,
+            "TTF": "JF-Dot-shinonome12.ttf",
+            "color": {
+                "red": 255,
+                "green": 255,
+                "blue": 255,
+                "trans": 0
+            },
+            "antialias": true
+        },
+
+        {
+            "use": "shooting",
+            "class": "TitleText2",
+            "pos": [620,620],
+            "name": "text2",
+            "tag" :"text2",
+            "layer": 5,
+            "text": "FINISH",
+            "text_size": 50,
+            "TTF": "JF-Dot-shinonome12.ttf",
+            "color": {
+                "red": 255,
+                "green": 255,
+                "blue": 255,
+                "trans": 0
+            },
+            "antialias": true
+        }
+    ],
+    "grp":
+    [
+        {
+            "use": "shooting",
+            "class": "TitleGroup",
+            "name": "group",
+            "objects": {
+                "title": "title",
+                "text1": "text1",
+                "text2": "text2"
+            } 
+        }
+    ]
+
+}
