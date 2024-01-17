@@ -29,6 +29,8 @@ class Component(I0,I2,I3, LayeredDirty):
         
         self.__same_names: dict[str, int] = {}
         
+        self.__killed = False
+        
     @property
     def name(self) -> str:
         return self._name
@@ -127,9 +129,16 @@ class Component(I0,I2,I3, LayeredDirty):
         if(self.parent != None):
             self.parent.remove(self.main)
             
+        self.__killed = True
+        self.remove(self.main)
+            
         del self
             
     def remove(self, *sprites: IGameObject | AbstractGroup | Iterable) -> None:
+        
+        if sprites[0] == self.main and self.__killed:
+            super().remove(self.main)
+            return
         
         for i in sprites:
         

@@ -41,6 +41,7 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
                 yield i.rect
         
     def update(self):
+        
         for i in self.sprites():
             collides: list[IGameObject] = pygame.sprite.spritecollide(i,self,False)
             for j in collides:

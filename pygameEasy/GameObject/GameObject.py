@@ -267,12 +267,6 @@ class GameObject(I0,I2,I3,I4):
             return
         
         self.__rect_set()
-        
-        """collides = pygame.sprite.spritecollide(self, self._drawer, False)
-        
-        for i in collides:
-            if i.visible:
-                self.on_collide(i)"""
             
             
     #jsonデータのセット       
@@ -302,6 +296,9 @@ class GameObject(I0,I2,I3,I4):
     def kill(self):
         self.__killed = True
         self.component.kill()
+        
+        for i in self.groups():
+            i.remove(self)
         
         del self
         
