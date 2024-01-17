@@ -2,10 +2,6 @@ import json
 import os
 import injector
 
-from pygameEasy.GManager import ISceneLoader as I0
-from pygameEasy.GameObject import ISceneLoader as I1
-from pygameEasy.ObjectSetter import ISceneLoader as I2
-
 from pygameEasy.Singleton import Singleton
 
 #levelの分だけ上の階層のディレクトリの絶対パスを返す
@@ -18,7 +14,7 @@ def get_parent_path(level):
 PROJECT_PATH = os.path.dirname(os.getcwd())
 
 @injector.singleton
-class SceneLoader(I0,I1,I2, Singleton):
+class SceneLoader(Singleton):
     _scene_data: list[str] = []
     _end_scene: bool = False
     _path: str = ""
@@ -51,7 +47,4 @@ class SceneLoader(I0,I1,I2, Singleton):
 from pygameEasy.DependencyConfig import Config
 
 configs = [
-    Config(I0, lambda: SceneLoader.get_instance()),
-    Config(I1, lambda: SceneLoader.get_instance()),
-    Config(I2, lambda: SceneLoader.get_instance())
 ]

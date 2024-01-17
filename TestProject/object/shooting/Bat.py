@@ -3,8 +3,7 @@ from pygame import locals
 import os
 import math
 
-from pygameEasy.GameObject import GameObject
-from pygameEasy.Vector import Vector
+from pygameEasy import *
 
 
 class Bat(GameObject):
@@ -35,7 +34,10 @@ class Bat(GameObject):
         self.position = [100,50]    #親positionとの相対位置
         self.mode = 0
         
-        self.swing = self._music.get_sound("light_saber1.mp3")
+        self.music = Music.get_instance()
+        self.key = Key.get_instance()
+        
+        self.swing = self.music.get_sound("light_saber1.mp3")
         self.stop = False
         
         self.clock = pygame.time.Clock()
@@ -78,19 +80,19 @@ class Bat(GameObject):
 
         #self.position = obj.rect.center
 
-        if self._key.get_key_down("enter"):
+        if self.key.get_key_down("enter"):
             if self.mode == 0 and self.count >= self.c_lim:
                 self.mode = 1
-                self._music.play_effect(self.swing)
+                self.music.play_effect(self.swing)
                 
                 
-        if self._key.get_key_down("R_shift"):
+        if self.key.get_key_down("R_shift"):
             if self.mode == 0 and self.count >= self.c_lim:
                 self.mode = 2
                 self.angle = 180
-                self._music.play_effect(self.swing)
+                self.music.play_effect(self.swing)
             
-        if self._key.get_key_up("enter"):
+        if self.key.get_key_up("enter"):
             pass
         
         self.rotate_bat()

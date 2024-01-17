@@ -1,20 +1,13 @@
 from typing import Any, Iterable, Union
 import pygame
-import injector
-from dataclasses import dataclass
 
 from pygame.sprite import AbstractGroup
 
 from . import IGameObject
 
-from pygameEasy.GameObject import IDrawer as I0
-from pygameEasy.GManager import IDrawer as I1
-from pygameEasy.ObjectSetter import IDrawer as I2
-
 from pygameEasy.Singleton import Singleton
 
-@injector.singleton
-class Drawer(I0,I1,I2,Singleton):
+class Drawer(pygame.sprite.LayeredDirty,Singleton):
     rect_list: list[pygame.Rect] = []
     
     @classmethod    
@@ -48,7 +41,14 @@ class Drawer(I0,I1,I2,Singleton):
                 yield i.rect
         
     def update(self):
-        pygame.sprite.LayeredDirty.update(self)
+        for i in self.sprites():
+            collides: list[IGameObject] = pygame.sprite.spritecollide(i,self,False)
+            for j in collides:
+                if i.visible:
+                    i.on_collide(j)
+        
+        for i in self.sprites():
+            i.update()
         
         self.rect_list = list(self.__rect_list_gen())
         
@@ -57,15 +57,11 @@ class Drawer(I0,I1,I2,Singleton):
         for i in sprites:
             self.rect_list.append(i.rect)
         super().remove(*sprites)
-        
-        
+           
             
 from pygameEasy.DependencyConfig import Config
 
 configs = [
-    Config(I0, lambda: Drawer.get_instance()),
-    Config(I1, lambda: Drawer.get_instance()),
-    Config(I2, lambda: Drawer.get_instance())
 ]
             
         

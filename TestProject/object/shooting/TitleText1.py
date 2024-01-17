@@ -3,8 +3,7 @@ from pygame.locals import *
 import os
 import copy
 
-from pygameEasy.GameObject import TextObject
-from pygameEasy.Vector import Vector
+from pygameEasy import *
 
 class TitleText1(TextObject):
     def set_data(self, data) -> None:

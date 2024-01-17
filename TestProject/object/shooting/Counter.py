@@ -1,6 +1,6 @@
 import pygame
 
-from pygameEasy.GameObject import TextObject
+from pygameEasy import *
 
 class Counter(TextObject):
     def set_data(self, data) -> None:

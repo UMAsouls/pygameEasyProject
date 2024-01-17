@@ -1,4 +1,4 @@
-from pygameEasy.GameObject import TextObject
+from pygameEasy import *
 
 class GameOverText(TextObject):
     def set_data(self, data) -> None:

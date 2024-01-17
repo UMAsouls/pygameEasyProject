@@ -2,10 +2,6 @@ import pygame
 from pygame.locals import *
 import injector
 
-from pygameEasy.GameObject import IKey as I0
-from pygameEasy.GManager import IKey as I1
-from pygameEasy.ObjectSetter import IKey as I2
-
 from pygameEasy.Singleton import Singleton
 
 #全てのアルファベットの辞書
@@ -23,7 +19,7 @@ key_dict["back"] = K_BACKSPACE
 key_dict["R_shift"] = K_RSHIFT
 
 @injector.singleton
-class Key(I0,I1,I2,Singleton):
+class Key(Singleton):
     _key = {}
     for k in key_dict.keys():
         _key[k] = {
@@ -62,8 +58,5 @@ class Key(I0,I1,I2,Singleton):
 from pygameEasy.DependencyConfig import Config
 
 configs = [
-    Config(I0, lambda: Key.get_instance()),
-    Config(I1, lambda: Key.get_instance()),
-    Config(I2, lambda: Key.get_instance())
 ]
                         

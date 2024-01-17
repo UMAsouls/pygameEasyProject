@@ -1,6 +1,6 @@
 import pygame
 
-from pygameEasy.GameObject import GameObject
+from pygameEasy import *
 
 class Bar2(GameObject):
     def set_data(self, data):

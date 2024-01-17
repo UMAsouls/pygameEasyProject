@@ -3,8 +3,7 @@ from pygame import locals
 import os
 import math
 
-from pygameEasy.GameObject import GameObject
-from pygameEasy.Vector import Vector
+from pygameEasy import *
 
 from .Bat import Bat
 #from .Base import Base
@@ -27,9 +26,12 @@ class Bullet(GameObject):
         
         self.clock = pygame.time.Clock()
         
-        self.hit = self._music.get_sound("damage.ogg")
-        self.ref_effect = self._music.get_sound("damaged7.mp3")
-        self.shooter = self._groups.get_single_by_name("attack")
+        self.music = Music.get_instance()
+        self.grps = Groups.get_instance()
+        
+        self.hit = self.music.get_sound("damage.ogg")
+        self.ref_effect = self.music.get_sound("damaged7.mp3")
+        self.shooter = self.grps.get_single_by_name("attack")
         
         self.effect_data = data["effect"]
         
@@ -85,7 +87,7 @@ class Bullet(GameObject):
 
     #反射
     def reflect(self, angle_ref):
-        self._music.play_effect(self.ref_effect)
+        self.music.play_effect(self.ref_effect)
         self.vel.x = (self.vel.x **2 + self.vel.y **2 ) **0.5 * math.cos(math.radians(angle_ref + 90))
         self.vel.y = -1 * (self.vel.x **2 + self.vel.y **2 ) **0.5 * math.sin(math.radians(angle_ref + 90))
         self.mode = -1
@@ -119,10 +121,10 @@ class Bullet(GameObject):
         
         
     def bomb(self):
-        self._music.play_effect(self.hit)
-        effect = self._obj_setter.make_obj(self.effect_data)
+        self.music.play_effect(self.hit)
+        effect = make_obj_from_data(self.effect_data)
         effect.position = self.position
-        self._drawer.add(effect)
+        add_obj(effect)
         self.kill()
         
     def on_collide(self, obj: GameObject):

@@ -1,11 +1,9 @@
 import abc
 
-from pygame.sprite import Group
-
 from . import IGameObject
 from pygameEasy.Vector import Vector
 
-class ISingleGroup(metaclass = abc.ABCMeta):
+class IComponent(metaclass = abc.ABCMeta):
     @property
     @abc.abstractclassmethod
     def main(self) -> IGameObject:
@@ -13,17 +11,17 @@ class ISingleGroup(metaclass = abc.ABCMeta):
     
     @main.setter
     @abc.abstractclassmethod
-    def main(self, value: "ISingleGroup") -> None:
+    def main(self, value: "IComponent") -> None:
         pass
     
     @property
     @abc.abstractclassmethod
-    def parent(self) -> "ISingleGroup":
+    def parent(self) -> "IComponent":
         pass
     
     @property
     @abc.abstractclassmethod
-    def root(self) -> "ISingleGroup":
+    def root(self) -> "IComponent":
         pass
     
     @property
@@ -36,7 +34,7 @@ class ISingleGroup(metaclass = abc.ABCMeta):
         pass
     
     @abc.abstractclassmethod
-    def get_kid(self, name:str) -> "ISingleGroup":
+    def get_kid(self, name:str) -> "IComponent":
         pass
     
     @abc.abstractclassmethod

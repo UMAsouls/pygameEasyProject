@@ -10,3 +10,7 @@ class IGameObject(pygame.sprite.DirtySprite, metaclass = abc.ABCMeta):
     @property
     def changed(self) -> bool:
         pass
+    
+    @abc.abstractclassmethod
+    def on_collide(self, obj: "IGameObject") -> None:
+        pass

@@ -1,5 +1,4 @@
-from pygameEasy.ObjectGroup import ObjectGroup
-from pygameEasy.GameObject import GameObject
+from pygameEasy import *
 
 from .Bar1 import Bar1
 from .Base import Base

@@ -1,8 +1,6 @@
 import pygame
 
-from pygameEasy.GameObject import GameObject
-from pygameEasy.Vector import Vector
-from pygameEasy.ObjectGroup import ObjectGroup
+from pygameEasy import *
 
 class Bar1(GameObject):
     def set_data(self, data):

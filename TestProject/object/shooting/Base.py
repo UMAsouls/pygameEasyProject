@@ -1,11 +1,9 @@
 import pygame
 from pygame.locals import *
-import os
-import copy
 
-from pygameEasy.GameObject import GameObject
+from pygameEasy import *
+
 from .Bullet import Bullet
-from pygameEasy.Vector import Vector
 
 class Base(GameObject):
     

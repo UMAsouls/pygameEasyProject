@@ -1,6 +1,6 @@
 import pygame
 
-from pygameEasy.GameObject import GameObject
+from pygameEasy import *
 
 
 class BulletEffect(GameObject):

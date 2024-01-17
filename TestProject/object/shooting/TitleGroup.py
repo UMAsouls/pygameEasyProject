@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from pygameEasy.ObjectGroup import ObjectGroup
+from pygameEasy import *
 
 class TitleGroup(ObjectGroup):
     def set_data(self, data):
@@ -9,10 +9,13 @@ class TitleGroup(ObjectGroup):
 
         self.object_count = 0
         
+        self.key = Key.get_instance()
+        self.scene_loader = SceneLoader.get_instance()
+        
     def update(self):
         super().update()
 
-        if self._key.get_key_down("up"):
+        if self.key.get_key_down("up"):
             if self.object_count == 1:
                 self.object.color = (255,255,255,0)
                 self.object = self.get_obj_by_id("text1")
@@ -22,7 +25,7 @@ class TitleGroup(ObjectGroup):
                 self.object.color = (255,0,0,0)
                 self.object_count = 1
         
-        if self._key.get_key_down("down"):
+        if self.key.get_key_down("down"):
             if self.object_count == 1:
                 self.object.color = (255,255,255,0)
                 self.object = self.get_obj_by_id("text2")
@@ -32,9 +35,9 @@ class TitleGroup(ObjectGroup):
                 self.object.color = (255,0,0,0)
                 self.object_count = 1
         
-        if self._key.get_key_down("enter") and self.object_count == 1:
+        if self.key.get_key_down("enter") and self.object_count == 1:
             if self.object.name == "text1":
-                self._scene_loader.scene_load("2player.json")
+                self.scene_loader.scene_load("2player.json")
             elif self.object.name == "text2":
                 pygame.quit()
                 sys.exit()

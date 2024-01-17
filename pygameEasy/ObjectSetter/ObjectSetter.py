@@ -1,52 +1,79 @@
 import injector
+import sys
+from typing import Any
 
-from . import IDrawer
-from . import IGroups
-from . import IGameObject
+from pygameEasy import GameObject
+from pygameEasy import Component
+from pygameEasy import Groups
+from pygameEasy import Drawer
+from pygameEasy import ObjectGroup 
 
-from pygameEasy.GManager import IObjectSetter as I0
-from pygameEasy.GameObject import IObjectSetter as I1
-from .IObjectSetter import IObjectSetter as I2
+PROJECT_PATH = ""
 
-from pygameEasy.Singleton import Singleton
-
-class ObjectSetter(I0, I1, I2, Singleton):
-    _make_obj_tmp = None
-    _add_obj_tmp = None
-    _add_group_tmp = None
-    _groups: IGroups = None
-    _drawer: IDrawer = None
-        
-    def set_func(self, add_obj, add_group, make_obj) -> None:
-        self._make_obj_tmp = make_obj
-        self._add_obj_tmp = add_obj
-        self._add_group_tmp = add_group
-        
-    def set_dependency(self, groups: IGroups, drawer: IDrawer):
-        self._groups: IGroups = groups
-        self._drawer: IDrawer = drawer
-        
-    def make_obj(self, data: dict) -> IGameObject:
-        return self._make_obj_tmp(data)
-        
-    def add_obj(self, data: dict) -> None:
-        self._add_obj_tmp(data, self._groups, self._drawer)
+def init(path: str):
+    global PROJECT_PATH
+    PROJECT_PATH = path
+    sys.path.append(path)
     
-    def add_group(self, data: dict) -> None:
-        self._add_group_tmp(data, self._groups, self._drawer)
+#jsonデータからobjectを作る
+def make_obj_from_data(data: dict[str, Any]) -> GameObject:
+
+    obj_type: type[GameObject]
+    
+    if(data["class"] == ""):
+        obj_type = GameObject
+    else:
+        exec("from object" + " import " + data["use"])
+        obj_type = eval(f"{data['use']}.{data['class']}.{data['class']}")
+            
+    single = Component()
+            
+    obj = obj_type(
+        single,
+        PROJECT_PATH
+    )
         
-    def set_data(self, data: dict) -> None:
-        for d in data["obj"]:
-            self.add_obj(d)
+    #data内で子を指定することにする
+    if "kid" in data:
+        for i in data["kid"]:
+            kid: GameObject = make_obj_from_data(i)
+            kid.component.parent = single
         
-        for d in data["grp"]:
-            self.add_group(d)
+    obj.set_data(data)
+            
+    return obj
 
+def add_obj(obj: GameObject):
+    drawer = Drawer.get_instance()
+    groups = Groups.get_instance()
+    
+    groups.add_component(obj.component)
+    drawer.add(obj)
+    for i in obj.component.kids:
+        drawer.add(i)
+    
+    
+def make_grp_from_data(data: dict[str,Any]):
+    groups = Groups.get_instance()
+    
+    grp_type: type[ObjectGroup]
+    
+    if(data["class"] == ""):
+        grp_type = ObjectGroup
+    else:
+        exec("from object" + " import " + data["use"])
+        grp_type = eval(f"{data['use']}.{data['class']}.{data['class']}")
+        
+    grp = grp_type()
+    
+    for k,v in data["objects"].items():
+        obj = groups.get_single_by_name(v)
+        grp.set_obj(k, obj)
+    
+    grp.set_data(data)
+    
+    return grp
 
-from pygameEasy.DependencyConfig import Config
-
-configs = [
-    Config(I0, lambda: ObjectSetter.get_instance()),
-    Config(I1, lambda: ObjectSetter.get_instance()),
-    Config(I2, lambda: ObjectSetter.get_instance())
-]
+def add_grp(grp: ObjectGroup):
+    groups = Groups.get_instance()
+    groups.add_group(grp)

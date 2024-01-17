@@ -5,18 +5,11 @@ from pygame.locals import *
 from pygameEasy.Singleton import Singleton
 from pygameEasy.DependencyConfig import Config
 
-from pygameEasy.GameObject.IMusic import IMusic as I0
-from pygameEasy.ObjectGroup.IMusic import IMusic as I1
-from pygameEasy.GManager.IMusic import IMusic as I2
-from pygameEasy.ObjectSetter.IMusic import IMusic as I3
-
 BGM_END = 25
 BGM_CHANGE = 26
 BGM_STOP = 27
 
-print(I0, I1, I2, I3)
-
-class Music(Singleton, I0, I1, I2, I3):
+class Music(Singleton):
     pygame.mixer.init()
     _bgm_channel = Channel(0)
     _bgm_loop: Sound = None
@@ -41,7 +34,7 @@ class Music(Singleton, I0, I1, I2, I3):
     
     def set_path(self, path: str) -> None:
         self._path = path
-        
+    
     def get_sound(self, path: str) -> Sound:
         sound: Sound = Sound(self._path + "/Music/" + path)
         
@@ -88,8 +81,4 @@ class Music(Singleton, I0, I1, I2, I3):
         
             
 configs = [
-    Config(I0, lambda: Music.get_instance()),
-    Config(I1, lambda: Music.get_instance()),
-    Config(I2, lambda: Music.get_instance()),
-    Config(I3, lambda: Music.get_instance())
 ]    

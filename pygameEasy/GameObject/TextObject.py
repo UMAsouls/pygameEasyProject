@@ -5,7 +5,7 @@ import os
 import sys
 
 from pygameEasy.Vector import Vector
-from .GameObject import IDrawer, IGroups, IKey, IObjectSetter, ISceneLoader, ISingleGroup, IMusic
+from . import IComponent
 
 from .GameObject import GameObject
 
@@ -14,16 +14,10 @@ PROJECT_PATH = os.path.dirname(os.getcwd())
 class TextObject(GameObject):
     def __init__(
             self,
-            groups: IGroups,
-            drawer: IDrawer,
-            key: IKey, 
-            scene_loader: ISceneLoader, 
-            object_setter: IObjectSetter, 
-            music: IMusic, 
-            component: ISingleGroup,
+            component: IComponent,
             path: str
             ):
-        super().__init__(groups, drawer, key, scene_loader, object_setter, music, component, path)
+        super().__init__(component, path)
         
         self.__text: str = ""
         self.__font: pygame.font.Font = None

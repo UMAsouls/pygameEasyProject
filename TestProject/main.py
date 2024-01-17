@@ -10,124 +10,78 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 #いつかモジュール化して消す
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from pygameEasy.GManager import GManager
+from pygameEasy import *
 
-from pygameEasy.GManager import IGameObject
-from pygameEasy.GManager import IDrawer
-from pygameEasy.GManager import IGroups
-from pygameEasy.GManager import IKey
-from pygameEasy.GManager import ISceneLoader
-from pygameEasy.GManager import IObjectGroup
-from pygameEasy.GManager import ISingleGroup
-from pygameEasy.GManager import IObjectSetter
-from pygameEasy.GManager import IMusic
-
-from pygameEasy.GameObject import GameObject
-from pygameEasy.ObjectGroup import ObjectGroup
-
-from pygameEasy.DependencyMaker import Dependency
-
-for i in os.listdir("object"):
-    if i[0] == "_" or i[0] == ".": 
-        continue
-    exec(f"from object" + " import " + f"{i}")
+#from pygameEasy.DependencyMaker import Dependency
     
     
 PROJECT_PATH = os.getcwd()
-
-#jsonデータからobjectを作る
-def make_obj_from_data(data: dict[str, Any]) -> IGameObject:
-
-        obj_type: type[IGameObject]
     
-        if(data["class"] == ""):
-            obj_type = GameObject
-        else:
-            obj_type = eval(f"{data['use']}.{data['class']}.{data['class']}")
+def set_data(data: dict[str,Any]):
+    for d in data["obj"]:
+        obj = make_obj_from_data(d)
+        add_obj(obj)
+        
+    for d in data["grp"]:
+        grp = make_grp_from_data(d)
+        add_grp(grp)
+        
+def start():
+    drawer = Drawer.get_instance()
+    drawer.draw(pygame.display.get_surface())
+    
+def update():
+    key = Key.get_instance()
+    music = Music.get_instance()
+    drawer = Drawer.get_instance()
+    groups = Groups.get_instance()
+    
+    drawer.update()
+    drawer.draw(pygame.display.get_surface())
+    
+    groups.update()
+    
+    music.update()
+    key.update()
+    
+    for event in pygame.event.get():
+        if(event.type == QUIT):
+            pygame.quit()
+            sys.exit()
+                
+        if(event.type == KEYDOWN):
+            if(event.key == K_ESCAPE):
+                pygame.quit()
+                sys.exit()
+            key.key_down_update(event)
+                
+        if(event.type == KEYUP):
+            key.key_up_update(event)
             
-        single: ISingleGroup = Dependency[ISingleGroup]()
-            
-        obj = obj_type(
-            Dependency[IGroups](),
-            Dependency[IDrawer](),
-            Dependency[IKey](),
-            Dependency[ISceneLoader](),
-            Dependency[IObjectSetter](),
-            Dependency[IMusic](),
-            single,
-            PROJECT_PATH
-        )
-        
-        #data内で子を指定することにする
-        if "kid" in data:
-            for i in data["kid"]:
-                kid: IGameObject = make_obj_from_data(i)
-                kid.component.parent = single
-        
-        obj.set_data(data)
-            
-        return obj
-
-#GameObjectを追加する処理
-def add_obj(data: dict, groups: IGroups, drawer: IDrawer):
-    obj: IGameObject = make_obj_from_data(data)
-    groups.add_component(obj.component)
-    drawer.add(obj)
-    for i in obj.component.kids:
-        drawer.add(i)
-        
-
-def make_grp_from_data(data: dict[str,Any]):
+def reload():
+    Groups.get_instance().init()
+    Drawer.get_instance().init()
     
-    grp_type: type[IObjectGroup]
-    
-    if(data["class"] == ""):
-        grp_type = ObjectGroup
-    else:
-        print(data["class"])
-        grp_type = eval(f"{data['use']}.{data['class']}.{data['class']}")
-        
-    grp = grp_type(
-        Dependency[IGroups](),
-        Dependency[IDrawer](),
-        Dependency[IKey](),
-        Dependency[ISceneLoader](),
-        Dependency[IObjectSetter](),
-        Dependency[IMusic](),
-    )
-    
-    grp.set_data(data)
-    
-    return grp
-
-#グループを追加する処理
-#後々作る
-def add_group(data: dict, groups: IGroups, drawer: IDrawer):
-    grp = make_grp_from_data(data)
-    groups.add_group(grp)
-
 def main():
-    obj_setter: IObjectSetter = Dependency[IObjectSetter]()
-    obj_setter.set_func(add_obj, add_group, make_obj_from_data)
-    obj_setter.set_dependency(Dependency[IGroups]() ,Dependency[IDrawer]())
-    
-    scene_loader: ISceneLoader = Dependency[ISceneLoader]()
+    pygame.init()
+    init(PROJECT_PATH)
+    scene_loader = SceneLoader.get_instance()
     scene_loader.set_path(PROJECT_PATH)
+    scene_loader.scene_load("title.json")
     
-    music: IMusic = Dependency[IMusic]()
+    music = Music.get_instance()
     music.set_path(PROJECT_PATH)
     
-    gm = GManager(
-        groups=Dependency[IGroups](),
-        key=Dependency[IKey](),
-        drawer=Dependency[IDrawer](),
-        scene_loader=Dependency[ISceneLoader](),
-        object_setter=Dependency[IObjectSetter](),
-        music = music
-        )
-    #gm.set_func(set_data)
-    gm.scene_loader.scene_load("title.json")
-    gm.MainLoop()
+    screen = pygame.display.set_mode([0,0], DOUBLEBUF|HWSURFACE|NOFRAME)
+    scene_loader.end_scene
+    while(True):
+        set_data(scene_loader.scene_data)
+        start()
+        while(True):
+            update()
+            if scene_loader.end_scene:
+                reload()
+                break
 
 
 if __name__ == "__main__" :

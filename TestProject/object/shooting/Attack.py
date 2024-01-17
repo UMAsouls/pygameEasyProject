@@ -1,10 +1,8 @@
 import pygame
 from pygame.locals import *
-import os
-import copy
 
-from pygameEasy.GameObject import GameObject
-from pygameEasy.Vector import Vector
+from pygameEasy import *
+
 from .Bullet import Bullet
 
 class Attack(GameObject):
@@ -21,7 +19,9 @@ class Attack(GameObject):
         
         self.change_pivot("center")
         
-        self.sound = self._music.get_sound("shot.mp3")
+        self.music = Music.get_instance()
+        self.key = Key.get_instance()
+        self.sound = self.music.get_sound("shot.mp3")
         
         size = pygame.display.get_surface().get_size()
         
@@ -39,11 +39,12 @@ class Attack(GameObject):
 
 
     def shoot(self , k):
-        bullet: Bullet  = self._obj_setter.make_obj(self.ball)
+        bullet: Bullet  = make_obj_from_data(self.ball)
         bullet.position = self.position
         bullet.mode = k
-        self._drawer.add(bullet)
-        self._music.play_effect(self.sound)
+        
+        add_obj(bullet)
+        self.music.play_effect(self.sound)
         self.interval = 0.0
         
     def on_collide(self, obj: GameObject):
@@ -76,26 +77,26 @@ class Attack(GameObject):
         if self.late_time < 0:
             self.speed /= 2
         
-        if(self._key.get_key_repeat("a")) and self.rect.left > self.pos_lim[0]:
+        if(self.key.get_key_repeat("a")) and self.rect.left > self.pos_lim[0]:
             self.vel += Vector(-1*self.speed,0)
-        if(self._key.get_key_repeat("d")) and self.rect.right < self.pos_lim[2]:
+        if(self.key.get_key_repeat("d")) and self.rect.right < self.pos_lim[2]:
             self.vel += Vector(self.speed,0)
-        if(self._key.get_key_repeat("w")) and self.rect.top > self.pos_lim[1]:
+        if(self.key.get_key_repeat("w")) and self.rect.top > self.pos_lim[1]:
             self.vel += Vector(0,-1*self.speed)
-        if(self._key.get_key_repeat("s")) and self.rect.bottom <= self.pos_lim[3]:
+        if(self.key.get_key_repeat("s")) and self.rect.bottom <= self.pos_lim[3]:
             self.vel += Vector(0,self.speed)
 
         if self.interval >= 0.8:
-            if(self._key.get_key_down("x")):
+            if(self.key.get_key_down("x")):
                 self.shoot(1)
 
-            elif(self._key.get_key_down("v")):
+            elif(self.key.get_key_down("v")):
                 self.shoot(2)
 
-            elif(self._key.get_key_down("c")):
+            elif(self.key.get_key_down("c")):
                 self.shoot(3)
 
-            elif(self._key.get_key_down("b")):
+            elif(self.key.get_key_down("b")):
                 self.shoot(4)
 
         else:

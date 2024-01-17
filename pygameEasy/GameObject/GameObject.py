@@ -2,27 +2,16 @@ from typing import Any
 import pygame
 from pygame.locals import *
 import os
-import sys
-import injector
 import numpy as np
 
 from pygameEasy.Vector import Vector
 
-from . import IObjectGroup
-from . import ISingleGroup
-from . import IGroups
-from . import IDrawer
-from . import IKey
-from . import ISceneLoader
-from . import IObjectSetter
-from . import IMusic
+from . import IComponent
 
 from pygameEasy.Drawer import IGameObject as I0
-from pygameEasy.GManager import IGameObject as I1
 from pygameEasy.Groups import IGameObject as I2
 from pygameEasy.ObjectGroup import IGameObject as I3
 from . import IGameObject as I4
-from pygameEasy.ObjectSetter import IGameObject as I5
 
 #ピボット（描写位置)
 PIVOTS = {
@@ -41,17 +30,11 @@ def get_parent_path(level):
     return path
 
 #全てのオブジェクトの基礎
-class GameObject(I0,I1,I2,I3,I4,I5):
+class GameObject(I0,I2,I3,I4):
     #コンストラクタ
     def __init__(
         self,
-        groups: IGroups,
-        drawer: IDrawer, 
-        key: IKey, 
-        scene_loader: ISceneLoader,
-        object_setter: IObjectSetter,
-        music: IMusic,
-        component: ISingleGroup,
+        component: IComponent,
         path: str
         ):
         
@@ -72,21 +55,14 @@ class GameObject(I0,I1,I2,I3,I4,I5):
         
         self._path = path
         
-        #シングルトン
-        #様々な要素にアクセス可能
-        self._groups :IGroups = groups
-        self._drawer :IDrawer = drawer
-        self._key :IKey = key
-        self._scene_loader :ISceneLoader = scene_loader
-        self._obj_setter :IObjectSetter = object_setter
-        self._music :IMusic = music
-        
         #元々の要素の初期化
         self.__visible :bool = True
         self.layer :int = 5
         self.dirty :int = 2
         self.__image :pygame.Surface = pygame.Surface([0,0])
         self.__rect :pygame.Rect = self.__image.get_rect()
+        
+        self.__killed: bool = False
     
     #ここからセッター、ゲッター    
     @property
@@ -149,12 +125,12 @@ class GameObject(I0,I1,I2,I3,I4,I5):
         self._changed = value
         
     @property
-    def component(self) -> ISingleGroup:
+    def component(self) -> IComponent:
         return self._component
     
     @component.setter
-    def component(self, value: ISingleGroup) -> None:
-        self._component: ISingleGroup = value
+    def component(self, value: IComponent) -> None:
+        self._component: IComponent = value
         if(self._component.main != self):
             self._component.main = self
             
@@ -235,6 +211,10 @@ class GameObject(I0,I1,I2,I3,I4,I5):
         self.changed = True
         self.__rect_set()
         
+    @property
+    def killed(self) -> bool:
+        return self.__killed
+        
     #ここまでセッター、ゲッター
     
     #描写位置を変える
@@ -288,11 +268,11 @@ class GameObject(I0,I1,I2,I3,I4,I5):
         
         self.__rect_set()
         
-        collides = pygame.sprite.spritecollide(self, self._drawer, False)
+        """collides = pygame.sprite.spritecollide(self, self._drawer, False)
         
         for i in collides:
             if i.visible:
-                self.on_collide(i)
+                self.on_collide(i)"""
             
             
     #jsonデータのセット       
@@ -320,11 +300,10 @@ class GameObject(I0,I1,I2,I3,I4,I5):
         
         
     def kill(self):
-        if(self.component.parent == None):
-            self._groups.remove_single(self.name)
+        self.__killed = True
         self.component.kill()
-        self._groups.remove_obj_from_grp(self)
-        self._drawer.remove(self)
+        
+        del self
         
         
 

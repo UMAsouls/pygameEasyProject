@@ -5,19 +5,16 @@ import os
 
 from pygame.sprite import AbstractGroup, LayeredDirty
 
-from . import ObjectGroup
-from . import IGameObject
+from .IGameObject import IGameObject
 
-from pygameEasy.Groups import ISingleGroup as I0
-from pygameEasy.GManager import ISingleGroup as I1
-from pygameEasy.GameObject import ISingleGroup as I2
-from .ISingleGroup import ISingleGroup as I3
-from pygameEasy.ObjectSetter import ISingleGroup as I4
+from pygameEasy.Groups import IComponent as I0
+from pygameEasy.GameObject import IComponent as I2
+from .IComponent import IComponent as I3
 
 from pygameEasy.Vector import Vector
 
 #コンポーネント(的なもの)
-class SingleGroup(I0,I1,I2,I3,I4, LayeredDirty):
+class Component(I0,I2,I3, LayeredDirty):
     def __init__(self) -> None:
         LayeredDirty.__init__(self)
         self._main: IGameObject = None
@@ -25,9 +22,9 @@ class SingleGroup(I0,I1,I2,I3,I4, LayeredDirty):
         
         self._position: Vector = Vector(0,0)
         
-        self._root : "SingleGroup" = self
-        self._parent : "SingleGroup" = None
-        self._kids: dict[str, "SingleGroup"] = {}
+        self._root : "Component" = self
+        self._parent : "Component" = None
+        self._kids: dict[str, "Component"] = {}
         self._kid_names: list[str] = []
         
         self.__same_names: dict[str, int] = {}
@@ -41,11 +38,11 @@ class SingleGroup(I0,I1,I2,I3,I4, LayeredDirty):
         self._name = value
         
     @property
-    def root(self) -> "SingleGroup":
+    def root(self) -> "Component":
         return self._root
     
     @root.setter
-    def root(self, component: "SingleGroup") -> None:
+    def root(self, component: "Component") -> None:
         self._root = component
 
     #mainのゲッター
@@ -75,12 +72,12 @@ class SingleGroup(I0,I1,I2,I3,I4, LayeredDirty):
             
     #親の取得
     @property
-    def parent(self) -> "SingleGroup":
+    def parent(self) -> "Component":
         return self._parent
     
     #親の設定
     @parent.setter
-    def parent(self, component: "SingleGroup") -> None:
+    def parent(self, component: "Component") -> None:
         if not component.is_kid(self):
             component.set_kid(self)
         
@@ -93,15 +90,15 @@ class SingleGroup(I0,I1,I2,I3,I4, LayeredDirty):
     
 
     #子の存在
-    def is_kid(self, component: "SingleGroup") -> bool:
+    def is_kid(self, component: "Component") -> bool:
         return (component.name in self._kids)
     
     #子の取得
-    def get_kid(self, name: str) -> "SingleGroup":
+    def get_kid(self, name: str) -> "Component":
         return self._kids[name]
     
     #子の設定
-    def set_kid(self, component: "SingleGroup") -> None:
+    def set_kid(self, component: "Component") -> None:
         if component.name in self.__same_names:
             self.__same_names[component.name] += 1
             component.name += f"({self.__same_names[component.name]})"
@@ -125,7 +122,7 @@ class SingleGroup(I0,I1,I2,I3,I4, LayeredDirty):
     def kill(self):
         
         for i in self._kids.values():
-            i.kill()
+            i.main.kill()
         
         if(self.parent != None):
             self.parent.remove(self.main)
@@ -152,10 +149,8 @@ class SingleGroup(I0,I1,I2,I3,I4, LayeredDirty):
 from pygameEasy.DependencyConfig import Config
 
 configs = [
-    Config(I0, SingleGroup),
-    Config(I1, SingleGroup),
-    Config(I2, SingleGroup),
-    Config(I3, SingleGroup),
-    Config(I4, SingleGroup)
+    Config(I0, Component),
+    Config(I2, Component),
+    Config(I3, Component)
 ]
         

@@ -1,6 +1,6 @@
 import pygame
 
-from pygameEasy.ObjectGroup import ObjectGroup
+from pygameEasy import *
 
 from .Base import Base
 from .Counter import Counter
@@ -22,18 +22,22 @@ class GameOverGroup(ObjectGroup):
         self.defence: Defense = self.get_obj_by_id("defence")
         self.bat = self.defence.component.get_kid("bat").main
         
+        self.music = Music.get_instance()
+        self.key = Key.get_instance()
+        self.scene_loader = SceneLoader.get_instance()
+        
         self.winner = ""
         self.over: bool = False
 
         self.object_count = 0
         self.object = ""
         
-        self.win = self._music.get_sound("win.ogg")
+        self.win = self.music.get_sound("win.ogg")
     
     #選択肢を選択するプログラム
     def selecter(self):
         if self.text.visible:
-            if self._key.get_key_down("up"):
+            if self.key.get_key_down("up"):
                 if self.object_count == 1:
                     self.select2.color = (255,255,255,0)
                     self.select1.color = (255,0,0,0)
@@ -43,7 +47,7 @@ class GameOverGroup(ObjectGroup):
                     self.object_count = 1
                     self.object = self.select1
         
-            if self._key.get_key_down("down"):
+            if self.key.get_key_down("down"):
                 if self.object_count == 1:
                     self.select1.color = (255,255,255,0)
                     self.select2.color = (255,0,0,0)
@@ -53,12 +57,12 @@ class GameOverGroup(ObjectGroup):
                     self.object_count = 1
                     self.object = self.select2
 
-            if self._key.get_key_down("enter"):
+            if self.key.get_key_down("enter"):
                 if self.object == self.select1:
-                    self._scene_loader.scene_load("2player.json")
+                    self.scene_loader.scene_load("2player.json")
                     Counter.visible = True
                 elif self.object == self.select2:
-                    self._scene_loader.scene_load("title.json")
+                    self.scene_loader.scene_load("title.json")
                     Counter.visible = True
         else:
             pass
@@ -86,8 +90,8 @@ class GameOverGroup(ObjectGroup):
         self.bat.stop = True
         
     def music_set(self):
-        self._music.stop_bgm()
-        self._music.play_effect(self.win)
+        self.music.stop_bgm()
+        self.music.play_effect(self.win)
         
     def update(self):
         super().update()

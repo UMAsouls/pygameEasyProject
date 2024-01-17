@@ -3,7 +3,7 @@ import abc
 
 from . import IGameObject
 
-class ISingleGroup(metaclass = abc.ABCMeta):
+class IComponent(metaclass = abc.ABCMeta):
     @property
     @abc.abstractclassmethod
     def name(self) -> str:
@@ -15,5 +15,5 @@ class ISingleGroup(metaclass = abc.ABCMeta):
         raise NotImplementedError()
     
     @abc.abstractclassmethod
-    def get_kid(self, name: str) -> "ISingleGroup":
+    def get_kid(self, name: str) -> "IComponent":
         pass

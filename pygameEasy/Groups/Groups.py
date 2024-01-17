@@ -4,18 +4,14 @@ import sys
 
 from . import IGameObject
 from . import IObjectGroup
-from . import ISingleGroup
-
-from pygameEasy.GameObject import IGroups as I0
-from pygameEasy.GManager import IGroups as I1
-from pygameEasy.ObjectSetter import IGroups as I2
+from . import IComponent
 
 from pygameEasy.Singleton import Singleton
 
 @injector.singleton
-class Groups(I0,I1,I2,Singleton):
+class Groups(Singleton):
     _groups: dict[str, IObjectGroup] = {}
-    _singles: dict[str, ISingleGroup] = {}
+    _singles: dict[str, IComponent] = {}
     _types = {}  
     __groups_same_names: dict[str, int] = {}
     __singles_same_names: dict[str, int] = {}
@@ -39,7 +35,7 @@ class Groups(I0,I1,I2,Singleton):
         
         self._groups[group.name] = group
             
-    def add_component(self, single: ISingleGroup) -> None:
+    def add_component(self, single: IComponent) -> None:
         if single.name in self.__singles_same_names:
             self.__singles_same_names[single.name] += 1
             single.name += f"({self.__singles_same_names[single.name]})"
@@ -51,16 +47,16 @@ class Groups(I0,I1,I2,Singleton):
         
     def get_single_by_name(self, name:str) -> IGameObject:
         names = name.split(".")
-        single: ISingleGroup = self._singles[names[0]]
+        single: IComponent = self._singles[names[0]]
         
         for i in names[1:]:
             single = single.get_kid(i)
             
         return single.main
     
-    def get_component_by_name(self, name: str) -> ISingleGroup:
+    def get_component_by_name(self, name: str) -> IComponent:
         names = name.split(".")
-        single: ISingleGroup = self._singles[names[0]]
+        single: IComponent = self._singles[names[0]]
         
         for i in names[1:]:
             single = single.get_kid(i)
@@ -84,7 +80,4 @@ class Groups(I0,I1,I2,Singleton):
 from pygameEasy.DependencyConfig import Config
 
 configs = [
-    Config(I0, lambda: Groups.get_instance()),
-    Config(I1, lambda: Groups.get_instance()),
-    Config(I2, lambda: Groups.get_instance())
 ]

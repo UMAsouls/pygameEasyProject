@@ -1,6 +1,6 @@
 import pygame
 
-from pygameEasy.GameObject import GameObject
+from pygameEasy import *
 
 class Background(GameObject):
     def set_data(self, data):
@@ -8,15 +8,19 @@ class Background(GameObject):
         
         size = pygame.display.get_surface().get_size()
         
-        self.bgm = self._music.get_sound("bgm.ogg")
+        self.music = Music.get_instance()
+        self.key = Key.get_instance()
+        self.scene_loader = SceneLoader.get_instance()
+        
+        self.bgm = self.music.get_sound("bgm.ogg")
         
         self.size = size
-        self._music.play_bgm(self.bgm)
+        self.music.play_bgm(self.bgm)
         
     def update(self):
         super().update()
         
-        if self._key.get_key_down("back"):
-            self._scene_loader.scene_load("title.json")
+        if self.key.get_key_down("back"):
+            self.scene_loader.scene_load("title.json")
         
         
