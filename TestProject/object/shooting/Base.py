@@ -7,8 +7,7 @@ from .Bullet import Bullet
 
 class Base(GameObject):
     
-    def set_data(self, data):
-        super().set_data(data)
+    def start(self):
         self.hp = 100
         self.max_hp = self.hp
         

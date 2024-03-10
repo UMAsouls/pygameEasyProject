@@ -15,3 +15,7 @@ class IObjectGroup(pygame.sprite.LayeredDirty, ABC):
     def event_check(self) -> None:
         pass
     
+    @abstractmethod
+    def start(self) -> None:
+        pass
+    

@@ -1,8 +1,7 @@
 from pygameEasy import *
 
 class GameOverText(TextObject):
-    def set_data(self, data) -> None:
-        super().set_data(data)
+    def start(self) -> None:
         
         self.visible = False
         

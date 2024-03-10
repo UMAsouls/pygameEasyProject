@@ -11,11 +11,7 @@ class Bat(GameObject):
     def hit(self, obj):
         obj.set_velocity(10,-90)
 
-    def set_data(self, data):
-        super().set_data(data)
-
-        if "speed" in data:
-            self.speed = data["speed"]
+    def start(self):
 
         raw_size = [270,180]
         disp_size = pygame.display.get_surface().get_size()

@@ -21,4 +21,12 @@ class IGameObject(pygame.sprite.DirtySprite, ABC):
     def get_onscreen_rect(self, camera: "IGameObject") -> pygame.Rect:
         pass
     
+    @abstractmethod
+    def setup(self) -> None:
+        pass
+    
+    @abstractmethod
+    def start(self) -> None:
+        pass
+    
     

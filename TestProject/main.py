@@ -2,6 +2,7 @@ import os
 import pygame
 from pygame.locals import *
 from typing import Any
+import json
 
 import sys
 
@@ -28,7 +29,11 @@ def set_data(data: dict[str,Any]):
         
 def start():
     drawer = Drawer.get_instance()
+    drawer.start()
     drawer.draw()
+    groups = Groups.get_instance()
+    groups.start()
+    
     
 def update():
     key = Key.get_instance()
@@ -63,11 +68,14 @@ def reload():
     Drawer.get_instance().init()
     
 def main():
+    with open(PROJECT_PATH + "\project.json") as f:
+        project = json.loads(f.read())
+    
     pygame.init()
     init(PROJECT_PATH)
     scene_loader = SceneLoader.get_instance()
     scene_loader.set_path(PROJECT_PATH)
-    scene_loader.scene_load("title.json")
+    scene_loader.scene_load(project["start_scene"])
     
     music = Music.get_instance()
     music.set_path(PROJECT_PATH)

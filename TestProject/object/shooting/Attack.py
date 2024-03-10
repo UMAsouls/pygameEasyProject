@@ -7,15 +7,14 @@ from .Bullet import Bullet
 
 class Attack(GameObject):
     
-    def set_data(self, data):
-        super().set_data(data)
+    def start(self):
         
         self.vel = Vector(0,0)
         self.interval: float = 1.0
 
-        self.ball = data["ball_data"]
-        self.max_speed = data["speed"]
-        self.speed = data["speed"]
+        self.ball = self.get_data("ball_data")
+        self.max_speed = self.get_data("speed")
+        self.speed = self.get_data("speed")
         
         self.change_pivot("center")
         

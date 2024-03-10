@@ -72,6 +72,10 @@ class Groups(Singleton):
     def remove_obj_from_grp(self, obj: IGameObject) -> None:
         for g in self._groups.values():
             g.remove(obj)
+            
+    def start(self):
+        for i in self._groups.values():
+            i.start()
     
     def update(self):
         for i in self._groups.values():

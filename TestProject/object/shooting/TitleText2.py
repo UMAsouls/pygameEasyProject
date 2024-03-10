@@ -5,8 +5,7 @@ import os
 from pygameEasy import *
 
 class TitleText2(TextObject):
-    def set_data(self, data) -> None:
-        super().set_data(data)
+    def start(self) -> None:
         
         size = pygame.display.get_surface().get_size()
         

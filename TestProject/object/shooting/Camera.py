@@ -3,8 +3,7 @@ import pygame
 from pygameEasy import *
 
 class Camera(GameObject):
-    def set_data(self, data):
-        super().set_data(data)
+    def start(self):
 
         self.drawer = Drawer.get_instance()
         self.drawer.set_camera(self)

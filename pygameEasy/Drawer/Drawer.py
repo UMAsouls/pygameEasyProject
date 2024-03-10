@@ -18,6 +18,7 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
     _camera: IGameObject = None
     _zoom: float = 100
     __disp_size: Vector = None
+    _started: bool = False
     
     @classmethod    
     def get_instance(cls) -> "Drawer":
@@ -38,6 +39,10 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
             self._zoom = float(value)
         else:
             self._zoom = 0.01
+            
+    @property
+    def started(self) -> bool:
+        return self._started
     
     #cameraセット    
     def set_camera(self, camera: IGameObject) -> None:
@@ -49,6 +54,7 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
         size = pygame.display.get_surface().get_size()
         self.__disp_size = Vector(size[0],size[1])
         pygame.sprite.LayeredDirty.__init__(self)
+        self._started = False
     
     #cameraの位置と拡大倍率から描写範囲を確定させる 
     def make_camera_rect(self) -> pygame.Rect:
@@ -98,6 +104,12 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
         for i in self.sprites():
             if i.changed:
                 yield i.rect
+                
+    def start(self):
+        for i in self.sprites():
+            i.start()
+            
+        self._started = True
     
     #全てのオブジェクトを一斉に更新させる
     def update(self):
@@ -108,6 +120,7 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
                     i.on_collide(j)
         
         for i in self.sprites():
+            i.setup()
             i.update()
         
         self.rect_list = list(self.__rect_list_gen())

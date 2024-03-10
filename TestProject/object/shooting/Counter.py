@@ -3,13 +3,10 @@ import pygame
 from pygameEasy import *
 
 class Counter(TextObject):
-    def set_data(self, data) -> None:
-        super().set_data(data)
-        
-        
+    def start(self) -> None:
         self.clock = pygame.time.Clock()
         
-        self.count = data["count"]
+        self.count = self.get_data("count")
         
     def update(self) -> None:
         self.clock.tick()

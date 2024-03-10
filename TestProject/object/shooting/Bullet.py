@@ -9,8 +9,7 @@ from .Bat import Bat
 #from .Base import Base
 
 class Bullet(GameObject):
-    def set_data(self, data):
-        super().set_data(data)
+    def start(self):
 
         self.t = 0
         self.mode = 0
@@ -33,7 +32,7 @@ class Bullet(GameObject):
         self.ref_effect = self.music.get_sound("damaged7.mp3")
         self.shooter = self.grps.get_single_by_name("attack")
         
-        self.effect_data = data["effect"]
+        self.effect_data = self.get_data("effect")
         
         self.change_pivot("center")
 

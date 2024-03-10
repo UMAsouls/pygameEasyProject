@@ -4,8 +4,7 @@ from pygameEasy import *
 
 
 class BulletEffect(GameObject):
-    def set_data(self, data):
-        super().set_data(data)
+    def start(self):
         
         self.clock = pygame.time.Clock()
         self.t = 0

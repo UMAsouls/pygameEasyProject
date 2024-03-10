@@ -3,8 +3,7 @@ import pygame
 from pygameEasy import *
 
 class Bar1(GameObject):
-    def set_data(self, data):
-        super().set_data(data)
+    def start(self):
         
         self.ratio = 1.0
         self.max_size = self.size

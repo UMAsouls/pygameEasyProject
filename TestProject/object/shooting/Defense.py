@@ -9,11 +9,9 @@ from .Bullet import Bullet
 
 class Defense(GameObject):
     
-    def set_data(self, data):
-        super().set_data(data)
-        
+    def start(self):
         self.vel = Vector(0,0)
-        self.speed = data["speed"]
+        self.speed = self.get_data("speed")
         
         self.change_pivot("center")
         

@@ -7,8 +7,7 @@ from pygameEasy import *
 
 class Title(GameObject):
     
-    def set_data(self, data):
-        super().set_data(data)
+    def start(self):
         self.size = pygame.display.get_surface().get_size()
         
         self.music = Music.get_instance()

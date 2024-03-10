@@ -10,8 +10,7 @@ from .Defense import Defense
 from .Bat import Bat
 
 class GameOverGroup(ObjectGroup):
-    def set_data(self, data: dict) -> None:
-        super().set_data(data)
+    def start(self) -> None:
         
         self.base: Base = self.get_obj_by_id("base")
         self.counter: Counter = self.get_obj_by_id("counter")
@@ -95,7 +94,6 @@ class GameOverGroup(ObjectGroup):
         self.music.play_effect(self.win)
         
     def update(self):
-        super().update()
         
         if self.over:
             self.selecter()

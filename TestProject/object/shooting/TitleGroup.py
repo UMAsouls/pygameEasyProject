@@ -4,8 +4,7 @@ import sys
 from pygameEasy import *
 
 class TitleGroup(ObjectGroup):
-    def set_data(self, data):
-        super().set_data(data)
+    def start(self) -> None:
 
         self.object_count = 0
         self.selecter = -1

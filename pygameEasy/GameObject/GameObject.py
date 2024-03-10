@@ -65,6 +65,8 @@ class GameObject(I0,I2,I3,I4):
         
         self.__event_listners: dict[self.EventListener] = {}
         self.__event_binders: dict[self.EventBinder] = {}
+        
+        self.__data: dict[str,Any] = {}
     
     #イベントが発生したことを知らせる
     class EventListener(IEL):
@@ -264,6 +266,9 @@ class GameObject(I0,I2,I3,I4):
             print(f"This is not EventBinder:", err)
             pygame.quit()
             sys.exit()
+            
+    def get_data(self, key:str) -> Any:
+        return self.__data[key]
         
     #ここまでセッター、ゲッター
     
@@ -344,18 +349,24 @@ class GameObject(I0,I2,I3,I4):
         rect_copy.top -= camera.rect.top
         return rect_copy
     
-    #更新処理  
-    def update(self):
+    #更新前の設定
+    def setup(self):
         pygame.sprite.DirtySprite.update(self)
         
         if not self.visible:
             return
         
         self.__rect_set()
+    
+    #更新処理  
+    def update(self) -> None:
+        pass
             
             
     #jsonデータのセット       
     def set_data(self, data):
+        self.__data = data
+        
         self._name = data["name"]
         if("tag" in data): self.tag = data["tag"]
         
@@ -376,6 +387,10 @@ class GameObject(I0,I2,I3,I4):
         self.__rect_set()
         
         if("size" in data): self.size = Vector(data["size"][0], data["size"][1])
+    
+       
+    def start(self) -> None:
+        pass
         
         
     def kill(self):

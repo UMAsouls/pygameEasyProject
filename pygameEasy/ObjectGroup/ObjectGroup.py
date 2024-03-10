@@ -22,6 +22,8 @@ class ObjectGroup(I0,I1):
         
         self._name: str = ""
         
+        self.__data: dict = {}
+        
         self.id_dict : dict[str, list[IGameObject]] = {}
         self.name_dict: dict[str, int] = {}
         self.type_dict: dict[str, list[int]] = {}
@@ -193,6 +195,9 @@ class ObjectGroup(I0,I1):
     @name.setter
     def name(self, n:str) -> None:
         self._name = n
+        
+    def get_data(self, key:str):
+        return self.__data[key]
     
     #指定した名前と同じオブジェクト全てを返す
     def get_objects(self, name: str) -> Generator:
@@ -210,10 +215,14 @@ class ObjectGroup(I0,I1):
     
     def set_event(self, event:Event):
         self._events.append(event)
-        
+    
         
     def set_data(self, data: dict) -> None:
+        self.__data = data
         self._name = data["name"]
+        
+    def start(self) -> None:
+        pass
     
     #指定したidのオブジェクトのリストを返す
     def get_obj_list_by_id(self, id: str) -> list[IGameObject]:

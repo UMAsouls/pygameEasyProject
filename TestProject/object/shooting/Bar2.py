@@ -3,8 +3,7 @@ import pygame
 from pygameEasy import *
 
 class Bar2(GameObject):
-    def set_data(self, data):
-        super().set_data(data)
+    def start(self):
         
         size = pygame.display.get_surface().get_size()
         

@@ -17,7 +17,8 @@ def init(path: str):
     
 #jsonデータからobjectを作る
 def make_obj_from_data(data: dict[str, Any]) -> GameObject:
-
+    drawer = Drawer.get_instance()
+    
     obj_type: type[GameObject]
     
     if(data["class"] == ""):
@@ -40,6 +41,8 @@ def make_obj_from_data(data: dict[str, Any]) -> GameObject:
             kid.component.parent = single
         
     obj.set_data(data)
+    
+    if(drawer.started): obj.start()
             
     return obj
 
