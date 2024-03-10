@@ -3,7 +3,7 @@ import os
 print(os.getcwd())
 
 
-for i in os.listdir("object/test"):
+for i in os.listdir("C:/Users/admin/pygameEasyProject/TestProject/object/test"):
     if(i[0] == "_" or i[0] == "."):
         continue
     exec(f"from object.test import {i}"[0:-3])

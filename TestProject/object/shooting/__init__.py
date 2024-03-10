@@ -1,7 +1,7 @@
 import os
 
 
-for i in os.listdir("object/shooting"):
+for i in os.listdir("C:/Users/admin/pygameEasyProject/TestProject/object/shooting"):
     if(i[0] == "_" or i[0] == "."):
         continue
     exec(f"from object.shooting import {i}"[0:-3])
