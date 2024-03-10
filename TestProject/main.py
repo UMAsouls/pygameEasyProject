@@ -28,7 +28,7 @@ def set_data(data: dict[str,Any]):
         
 def start():
     drawer = Drawer.get_instance()
-    drawer.draw(pygame.display.get_surface())
+    drawer.draw()
     
 def update():
     key = Key.get_instance()
@@ -37,7 +37,7 @@ def update():
     groups = Groups.get_instance()
     
     drawer.update()
-    drawer.draw(pygame.display.get_surface())
+    drawer.draw()
     
     groups.update()
     
@@ -74,6 +74,9 @@ def main():
     
     screen = pygame.display.set_mode([0,0], DOUBLEBUF|HWSURFACE|NOFRAME)
     scene_loader.end_scene
+    
+    drawer = Drawer.get_instance()
+    drawer.init()
     while(True):
         set_data(scene_loader.scene_data)
         start()

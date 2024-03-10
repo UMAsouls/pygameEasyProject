@@ -1,26 +1,37 @@
 import pygame
-import abc
+from abc import ABC,abstractmethod
 
 from .IComponent import IComponent
 from pygameEasy.Vector import Vector
 
-class IGameObject(pygame.sprite.DirtySprite, metaclass = abc.ABCMeta):
+from .IEventBinder import IEventBinder
+from .IEventListener import IEventListener
+
+class IGameObject(pygame.sprite.DirtySprite,ABC):
     @property
-    @abc.abstractclassmethod
+    @abstractmethod
     def name(self) -> str:
         raise NotImplementedError()
     
     @property
-    @abc.abstractclassmethod
+    @abstractmethod
     def component(self) -> IComponent:
         pass
     
     @component.setter
-    @abc.abstractclassmethod
+    @abstractmethod
     def component(self, component: IComponent) -> None:
         pass
     
     @property
-    @abc.abstractclassmethod
+    @abstractmethod
     def position(self) -> Vector:
+        pass
+    
+    @abstractmethod
+    def get_event_listener(self, type:str) -> IEventListener:
+        pass
+    
+    @abstractmethod
+    def get_event_binder(self, type:str) -> IEventBinder:
         pass

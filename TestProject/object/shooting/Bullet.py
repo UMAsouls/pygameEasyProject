@@ -104,13 +104,13 @@ class Bullet(GameObject):
         
         if(direction > 90 and direction < 180):
             self.acc = Vector.get_by_polar(500, self.vel.angle() + 90)
-            print(1, direction, self.acc)
+            #print(1, direction, self.acc)
         elif(direction >= 180 and direction < 270):
             self.acc = Vector.get_by_polar(500, self.vel.angle() - 90)
-            print(2, direction, self.acc)
+            #print(2, direction, self.acc)
         else:
             self.acc = (pos-self.position).normalize()*1000
-            print(3,direction, self.acc)
+            #print(3,direction, self.acc)
             
         self.vel += self.acc*self.clock.get_time()/1000
         

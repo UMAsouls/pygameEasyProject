@@ -67,7 +67,7 @@ def make_grp_from_data(data: dict[str,Any]):
     grp = grp_type()
     
     for k,v in data["objects"].items():
-        obj = groups.get_single_by_name(v)
+        obj = [groups.get_single_by_name(i) for i in v]
         grp.set_obj(k, obj)
     
     grp.set_data(data)

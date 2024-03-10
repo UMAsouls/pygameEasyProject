@@ -1,15 +1,15 @@
 import pygame
-import abc
+from abc import ABC, abstractmethod
 
 from pygameEasy.Vector import Vector
 
-class IGameObject(pygame.sprite.DirtySprite, metaclass = abc.ABCMeta):
+class IGameObject(pygame.sprite.DirtySprite, ABC):
     @property
-    @abc.abstractclassmethod
+    @abstractmethod
     def position(self) -> Vector:
         pass
     
     @position.setter
-    @abc.abstractclassmethod
+    @abstractmethod
     def position(self, vec: Vector) -> None:
         pass

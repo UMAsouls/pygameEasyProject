@@ -5,6 +5,15 @@
     [
         {
             "use": "shooting",
+            "class": "Camera",
+            "pos": [0,0],
+            "name": "camera",
+            "tag": "camera",
+            "layer": 0
+        },
+
+        {
+            "use": "shooting",
             "class": "Defense", 
             "pos": [0, 0], 
             "name" : "defence", 
@@ -136,9 +145,9 @@
             "class": "HPbar",
             "name": "group",
             "objects": {
-                "base": "base",
-                "bar1": "bar1",
-                "bar2": "bar2"
+                "base": ["base"],
+                "bar1": ["bar1"],
+                "bar2": ["bar2"]
             } 
         },
 
@@ -147,13 +156,13 @@
             "class": "GameOverGroup",
             "name": "over_group",
             "objects": {
-                "base": "base",
-                "counter": "counter",
-                "text": "winner",
-                "select1": "over_select1",
-                "select2": "over_select2",
-                "attack": "attack",
-                "defence": "defence"
+                "base": ["base"],
+                "counter": ["counter"],
+                "text": ["winner"],
+                "select1": ["over_select1"],
+                "select2": ["over_select2"],
+                "attack": ["attack"],
+                "defence": ["defence"]
 
             }
         }

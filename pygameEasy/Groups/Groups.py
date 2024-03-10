@@ -76,6 +76,9 @@ class Groups(Singleton):
     def update(self):
         for i in self._groups.values():
             i.update()
+            
+        for i in self._groups.values():
+            i.event_check()
     
 from pygameEasy.DependencyConfig import Config
 

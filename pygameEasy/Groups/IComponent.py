@@ -1,19 +1,19 @@
 import pygame
-import abc
+from abc import ABC, abstractmethod
 
 from . import IGameObject
 
-class IComponent(metaclass = abc.ABCMeta):
+class IComponent(ABC):
     @property
-    @abc.abstractclassmethod
+    @abstractmethod
     def name(self) -> str:
         pass
     
     @property
-    @abc.abstractclassmethod
+    @abstractmethod
     def main(self) -> IGameObject:
         raise NotImplementedError()
     
-    @abc.abstractclassmethod
+    @abstractmethod
     def get_kid(self, name: str) -> "IComponent":
         pass

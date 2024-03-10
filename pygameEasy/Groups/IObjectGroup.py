@@ -1,13 +1,17 @@
 import pygame
-import abc
+from abc import ABC, abstractmethod
 
-class IObjectGroup(pygame.sprite.LayeredDirty, metaclass = abc.ABCMeta):
+class IObjectGroup(pygame.sprite.LayeredDirty, ABC):
     @property
-    @abc.abstractclassmethod
+    @abstractmethod
     def name(self) -> str:
         raise NotImplementedError()
     
-    @abc.abstractclassmethod
+    @abstractmethod
     def update(self) -> None:
+        pass
+    
+    @abstractmethod
+    def event_check(self) -> None:
         pass
     

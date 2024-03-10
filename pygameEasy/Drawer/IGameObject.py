@@ -1,16 +1,24 @@
 import pygame
-import abc
+from abc import ABC, abstractmethod
 
-class IGameObject(pygame.sprite.DirtySprite, metaclass = abc.ABCMeta):
+class IGameObject(pygame.sprite.DirtySprite, ABC):
     
     @property
+    @abstractmethod
     def rect(self) -> pygame.Rect:
         pass
     
     @property
+    @abstractmethod
     def changed(self) -> bool:
         pass
     
-    @abc.abstractclassmethod
+    @abstractmethod
     def on_collide(self, obj: "IGameObject") -> None:
         pass
+    
+    @abstractmethod
+    def get_onscreen_rect(self, camera: "IGameObject") -> pygame.Rect:
+        pass
+    
+    

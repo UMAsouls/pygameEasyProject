@@ -5,6 +5,15 @@
     [
         {
             "use": "shooting",
+            "class": "Camera",
+            "pos": [0,0],
+            "name": "camera",
+            "tag": "camera",
+            "layer": 0
+        },
+
+        {
+            "use": "shooting",
             "class": "Title",
             "pos": [0,0],
             "name": "title",
@@ -58,9 +67,8 @@
             "class": "TitleGroup",
             "name": "group",
             "objects": {
-                "title": "title",
-                "text1": "text1",
-                "text2": "text2"
+                "title": ["title"],
+                "text": ["text1","text2"]
             } 
         }
     ]

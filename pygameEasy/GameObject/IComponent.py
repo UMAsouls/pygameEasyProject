@@ -1,43 +1,43 @@
-import abc
+from abc import ABC,abstractmethod
 
 from . import IGameObject
 from pygameEasy.Vector import Vector
 
-class IComponent(metaclass = abc.ABCMeta):
+class IComponent(ABC):
     @property
-    @abc.abstractclassmethod
+    @abstractmethod
     def main(self) -> IGameObject:
         pass
     
     @main.setter
-    @abc.abstractclassmethod
+    @abstractmethod
     def main(self, value: "IComponent") -> None:
         pass
     
     @property
-    @abc.abstractclassmethod
+    @abstractmethod
     def parent(self) -> "IComponent":
         pass
     
     @property
-    @abc.abstractclassmethod
+    @abstractmethod
     def root(self) -> "IComponent":
         pass
     
     @property
-    @abc.abstractclassmethod
+    @abstractmethod
     def position(self) -> Vector:
         pass
     
-    @abc.abstractclassmethod
+    @abstractmethod
     def position_set(self) -> None:
         pass
     
-    @abc.abstractclassmethod
+    @abstractmethod
     def get_kid(self, name:str) -> "IComponent":
         pass
     
-    @abc.abstractclassmethod
+    @abstractmethod
     def kill(self) -> None:
         pass
     

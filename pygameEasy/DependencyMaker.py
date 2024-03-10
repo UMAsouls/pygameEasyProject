@@ -35,7 +35,7 @@ from pygameEasy.ObjectSetter.ObjectSetter import configs as c4
 DependencyMaker.set(c4)
 from pygameEasy.Key.Key import configs as c5
 DependencyMaker.set(c5)
-from pygameEasy.ObjectGroup.SingleGroup import configs as c6
+from pygameEasy.component.Component import configs as c6
 DependencyMaker.set(c6)
 from pygameEasy.Music.Music import configs as c7
 DependencyMaker.set(c7)

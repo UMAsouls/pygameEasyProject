@@ -1,7 +1,11 @@
 import pygame
-import abc
+from abc import ABC,abstractmethod
 
-class IComponent(metaclass = abc.ABCMeta):
-    @abc.abstractclassmethod
+class IComponent(ABC):
+    @abstractmethod
     def position_set(self) -> None:
+        pass
+    
+    @abstractmethod
+    def get_kid(self, name:str) -> "IComponent":
         pass

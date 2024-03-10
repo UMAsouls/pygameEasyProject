@@ -7,6 +7,7 @@ from .Counter import Counter
 from .GameOverText import GameOverText
 from .Attack import Attack
 from .Defense import Defense
+from .Bat import Bat
 
 class GameOverGroup(ObjectGroup):
     def set_data(self, data: dict) -> None:
@@ -20,7 +21,7 @@ class GameOverGroup(ObjectGroup):
         
         self.attack: Attack = self.get_obj_by_id("attack")
         self.defence: Defense = self.get_obj_by_id("defence")
-        self.bat = self.defence.component.get_kid("bat").main
+        self.bat: Bat = self.defence.component.get_kid("bat").main
         
         self.music = Music.get_instance()
         self.key = Key.get_instance()

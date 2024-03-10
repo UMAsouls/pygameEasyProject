@@ -1,8 +1,8 @@
 from typing import Any
 import pygame
 from pygame.locals import *
-import os
 import numpy as np
+import sys
 
 from pygameEasy.Vector import Vector
 
@@ -13,6 +13,9 @@ from pygameEasy.Groups import IGameObject as I2
 from pygameEasy.ObjectGroup import IGameObject as I3
 from . import IGameObject as I4
 
+from pygameEasy.ObjectGroup import IEventBinder as IEB
+from pygameEasy.ObjectGroup import IEventListener as IEL
+
 #ピボット（描写位置)
 PIVOTS = {
     "topleft":0, "top":1, "topright":2,
@@ -20,14 +23,9 @@ PIVOTS = {
     "bottomleft":6, "bottom":7, "bottomright":8
     }
 
-PROJECT_PATH = os.path.dirname(os.getcwd())
-
-#levelの分だけ上の階層のディレクトリの絶対パスを返す
-def get_parent_path(level):
-    path = __file__
-    for i in range(level+1):
-       path = os.path.abspath(os.path.join(path, os.pardir)) 
-    return path
+#イベントが見つからなかったときの例外
+class NotFoundEventException(Exception):
+    pass
 
 #全てのオブジェクトの基礎
 class GameObject(I0,I2,I3,I4):
@@ -48,6 +46,7 @@ class GameObject(I0,I2,I3,I4):
         self._tag :str = ""
         
         self.__base_image :pygame.Surface = pygame.Surface([0,0])
+        self.__base_image.fill((0,0,0,255))
         
         self._component = component
         
@@ -63,6 +62,46 @@ class GameObject(I0,I2,I3,I4):
         self.__rect :pygame.Rect = self.__image.get_rect()
         
         self.__killed: bool = False
+        
+        self.__event_listners: dict[self.EventListener] = {}
+        self.__event_binders: dict[self.EventBinder] = {}
+    
+    #イベントが発生したことを知らせる
+    class EventListener(IEL):
+        def __init__(self, type:str):
+            self._type: str = type
+            self._status = False
+            
+        @property
+        def type(self) -> str:
+            return self._type
+        
+        @property
+        def status(self) -> bool:
+            return self._status
+        
+        @status.setter
+        def status(self, value: bool) -> None:
+            self._status = value
+        
+    
+    #イベントによって起動する処理   
+    class EventBinder(IEB):
+        def __init__(self, type:str):
+            self._type: str = type
+            self._bind_func = None
+            
+        @property
+        def type(self) -> str:
+            return self._type
+        
+        #bindする関数を設定
+        #propertyでやるとバグる
+        def set_func(self, func) -> None:
+            self._bind_func = func
+            
+        def bind(self) -> None:
+            self._bind_func()
     
     #ここからセッター、ゲッター    
     @property
@@ -146,30 +185,7 @@ class GameObject(I0,I2,I3,I4):
         if(self.__angle < 0):
             self.__angle = 360 + self.__angle
         
-        if(self.__angle % 90 == 0):
-            image: pygame.Surface = pygame.transform.scale(self._base_image,self.__size.change2list())
-            self.image = pygame.transform.rotozoom(image, self.__angle, 1)
-            self.rect = self.image.get_rect()
-            self.changed = True
-            self.__rect_set()
-            return
-        
-        image: pygame.Surface = pygame.transform.scale(self._base_image,self.__size.change2list())
-        image = pygame.transform.rotozoom(image, self.__angle, 1)
-        rect = image.get_rect()
-        size = self.size.change2list()
-            
-        rect.size = [
-            abs(size[0]*np.cos(np.deg2rad(self.__angle))) + abs(size[1]*np.sin(np.deg2rad(self.__angle))),
-            abs(size[1]*np.cos(np.deg2rad(self.__angle))) + abs(size[0]*np.sin(np.deg2rad(self.__angle)))
-        ]
-        
-        rect.center = [image.get_width()//2, image.get_height()//2]
-        self.image = image.subsurface(rect)
-        
-        self.rect = self.image.get_rect()
-        self.changed = True
-        self.__rect_set()
+        self.__image_set()
         
     @property
     def size(self) -> Vector:
@@ -184,22 +200,7 @@ class GameObject(I0,I2,I3,I4):
         if(self.__size.x <= 0): self.__size.x = 1
         if(self.__size.y <= 0): self.__size.y = 1
         
-        image: pygame.Surface = pygame.transform.scale(self._base_image,self.__size.change2list())
-        image = pygame.transform.rotozoom(image, self.__angle, 1)
-        rect = image.get_rect()
-        size = self.size.change2list()
-            
-        rect.size = [
-            abs(size[0]*np.cos(np.deg2rad(self.__angle))) + abs(size[1]*np.sin(np.deg2rad(self.__angle))),
-            abs(size[1]*np.cos(np.deg2rad(self.__angle))) + abs(size[0]*np.sin(np.deg2rad(self.__angle)))
-        ]
-        
-        rect.center = [image.get_width()//2, image.get_height()//2]
-        self.image = image.subsurface(rect)
-        
-        self.rect = self.image.get_rect()
-        self.changed = True
-        self.__rect_set()
+        self.__image_set()
         
     @property
     def _base_image(self) -> pygame.Surface:
@@ -214,6 +215,55 @@ class GameObject(I0,I2,I3,I4):
     @property
     def killed(self) -> bool:
         return self.__killed
+    
+    #イベントリスナーのゲッター、セッター
+    def get_event_listener(self, type: str) -> EventListener:
+        try:
+            if type in self.__event_listners:
+                return self.__event_listners[type]
+            else:
+                raise NotFoundEventException(f"object called {self.name} doesn't have event type {type}")
+        except NotFoundEventException as err:
+            print(err)
+            pygame.quit()
+            sys.exit()
+                
+    
+    def set_event_listener(self, type: str, value: EventListener) -> None:
+        try:
+            if(isinstance(value, self.EventListener)):
+                self.__event_listners[type] = value
+            else:
+                raise ValueError()
+        except ValueError as err:
+            print(f"This is not EventListener:", err)
+            pygame.quit()
+            sys.exit()
+            
+            
+            
+    #イベントバインダーのゲッター、セッター
+    def get_event_binder(self, type: str) -> EventBinder:
+        try:
+            if type in self.__event_binders:
+                return self.__event_binders[type]
+            else:
+                raise NotFoundEventException(f"object called {self.name} doesn't have event type {type}")
+        except NotFoundEventException as err:
+            print(err)
+            pygame.quit()
+            sys.exit()
+    
+    def set_event_binder(self, type: str, value: EventBinder) -> None:
+        try:
+            if(isinstance(value, self.EventBinder)):
+                self.__event_binders[type] = value
+            else:
+                raise ValueError()
+        except ValueError as err:
+            print(f"This is not EventBinder:", err)
+            pygame.quit()
+            sys.exit()
         
     #ここまでセッター、ゲッター
     
@@ -228,6 +278,35 @@ class GameObject(I0,I2,I3,I4):
             
     def on_collide(self, obj: "GameObject"):
         pass
+    
+    #angleやsizeの値の変化に合わせてimageをセット
+    def __image_set(self):
+        image: pygame.Surface = pygame.transform.scale(self._base_image,self.__size.change2list())
+        image = pygame.transform.rotozoom(image, self.__angle, 1)
+        rect = image.get_rect()
+        size = self.size.change2list()
+        
+        #angleが90で割り切れるときはこの特殊処理をしないとサイズがバグる
+        #rect_sizeの計算式のせい
+        if(self.__angle % 90 == 0):
+            self.image = image
+            self.rect = self.image.get_rect()
+            self.changed = True
+            self.__rect_set()
+            return
+        
+        #transform.rotozoomはimageのサイズを変化させるため、それに合わせた変更が必要  
+        rect.size = [
+            abs(size[0]*np.cos(np.deg2rad(self.__angle))) + abs(size[1]*np.sin(np.deg2rad(self.__angle))),
+            abs(size[1]*np.cos(np.deg2rad(self.__angle))) + abs(size[0]*np.sin(np.deg2rad(self.__angle)))
+        ]
+        
+        rect.center = [image.get_width()//2, image.get_height()//2]
+        self.image = image.subsurface(rect)
+        
+        self.rect = self.image.get_rect()
+        self.changed = True
+        self.__rect_set()
     
     #positionをrectにセット
     def __rect_set(self):
@@ -258,6 +337,12 @@ class GameObject(I0,I2,I3,I4):
             pass
         
         self.rect.size = size
+        
+    def get_onscreen_rect(self, camera:"GameObject") -> pygame.Rect:
+        rect_copy = self.rect.copy()
+        rect_copy.left -= camera.rect.left
+        rect_copy.top -= camera.rect.top
+        return rect_copy
     
     #更新処理  
     def update(self):

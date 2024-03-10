@@ -26,7 +26,6 @@ class Bat(GameObject):
         ]
         
         self.rect = self.image.get_rect(center = self.rect.center)
-        self.copy = self.image.copy()
         self.visible = False
         
         self.change_pivot("center")
