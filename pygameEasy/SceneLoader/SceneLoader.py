@@ -15,6 +15,7 @@ PROJECT_PATH = os.path.dirname(os.getcwd())
 
 @injector.singleton
 class SceneLoader(Singleton):
+    _is_first: bool = True
     _scene_data: list[str] = []
     _end_scene: bool = False
     _path: str = ""
@@ -23,12 +24,23 @@ class SceneLoader(Singleton):
         self._path = path
         
     def scene_load(self, path: str) -> None:
+        """シーンの読み込み
+        
+        これを行うとend_sceneがTrueとなり読み込みが行われる
+
+        Args:
+            path (str): シーンのパス
+        """
         path = self._path + "/json/" + path
         with open(path) as f:
             data = json.load(f)
             
         self._scene_data = data
-        self._end_scene = True
+        
+        if(self._is_first): 
+            self._is_first = False
+        else:
+            self._end_scene = True
         
     
     @property

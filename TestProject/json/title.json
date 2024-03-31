@@ -71,6 +71,8 @@
                 "text": ["text1","text2"]
             } 
         }
-    ]
+    ],
+
+    "start_camera": "camera"
 
 }

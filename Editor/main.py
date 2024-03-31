@@ -3,8 +3,9 @@ import pygame
 from pygame.locals import *
 from typing import Any
 import json
-
 import sys
+
+from pygame_gui import UIManager
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -14,86 +15,73 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pygameEasy import *
 
 import startup
+from editor import Editor
+from emulator import Emulator
 
 #from pygameEasy.DependencyMaker import Dependency
     
 PROJECT_PATH = os.path.abspath(startup.start())
-    
-def set_data(data: dict[str,Any]):
-    for d in data["obj"]:
-        obj = make_obj_from_data(d)
-        add_obj(obj)
+
+#更新処理
+def update(emulator: Emulator, editor: Editor, dt: float) -> None:
+    """更新処理
+
+        エディタの更新処理をここでまとめて行う
         
-    for d in data["grp"]:
-        grp = make_grp_from_data(d)
-        add_grp(grp)
-        
-def start():
-    drawer = Drawer.get_instance()
-    drawer.start()
-    drawer.draw()
-    groups = Groups.get_instance()
-    groups.start()
-    
-    
-def update():
-    key = Key.get_instance()
-    music = Music.get_instance()
-    drawer = Drawer.get_instance()
-    groups = Groups.get_instance()
-    
-    drawer.update()
-    drawer.draw()
-    
-    groups.update()
-    
-    music.update()
-    key.update()
+        Args:
+            emulator (Emulator): エミュレータ
+            editor (Editor): エディタ
+            dt (float): フレーム間の時間
+    """
+    emulator.update()
     
     for event in pygame.event.get():
         if(event.type == QUIT):
             pygame.quit()
             sys.exit()
-                
+
         if(event.type == KEYDOWN):
             if(event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
-            key.key_down_update(event)
-                
-        if(event.type == KEYUP):
-            key.key_up_update(event)
-            
-def reload():
-    Groups.get_instance().init()
-    Drawer.get_instance().init()
+
+        editor.event_update(event)
+
+    editor.update(dt)
     
 def main():
     with open(PROJECT_PATH + "\project.json") as f:
-        project = json.loads(f.read())
+        project: dict[str, str|int] = json.loads(f.read())
     
     pygame.init()
-    init(PROJECT_PATH)
-    scene_loader = SceneLoader.get_instance()
-    scene_loader.set_path(PROJECT_PATH)
-    scene_loader.scene_load(project["start_scene"])
+    screen = pygame.display.set_mode([1920,1080])
+    sc_rect = screen.get_rect()
     
-    music = Music.get_instance()
-    music.set_path(PROJECT_PATH)
+    em_size = (
+        sc_rect.width*3//5,
+        sc_rect.height*3//5
+    )
+    emulate_window = pygame.Surface(em_size)
+    em_rect = emulate_window.get_rect()
+    em_rect.left = sc_rect.width // 5
     
-    screen = pygame.display.set_mode([0,0], DOUBLEBUF|HWSURFACE)
-    scene_loader.end_scene
+    emulator = Emulator(PROJECT_PATH, emulate_window)
+    editor = Editor()
+    clock = pygame.Clock()
     
-    drawer = Drawer.get_instance()
-    drawer.init()
+    emulator.load(project["start_scene"])
+    
     while(True):
-        set_data(scene_loader.scene_data)
-        start()
-        while(True):
-            update()
-            if scene_loader.end_scene:
-                reload()
-                break
+        dt = clock.tick(60) /1000
+        update(emulator, editor, dt)
+        
+        screen.fill([0,255,0,0])
+        screen.blit(emulate_window, em_rect)
+        editor.draw(screen)
+        
+        pygame.display.update()
+    
+    
 
 
 if __name__ == "__main__" :

@@ -6,7 +6,7 @@ class Camera(GameObject):
     def start(self):
 
         self.drawer = Drawer.get_instance()
-        self.drawer.set_camera(self)
+        #self.drawer.set_camera(self)
         self.drawer.zoom = 100
         self.zoom = 100
         self.mode = True

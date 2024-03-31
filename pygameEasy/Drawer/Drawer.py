@@ -1,4 +1,4 @@
-from typing import Any, Iterable, Union
+from typing import Any, Iterable
 import pygame
 import sys
 
@@ -19,6 +19,7 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
     _zoom: float = 100
     __disp_size: Vector = None
     _started: bool = False
+    _window: pygame.Surface = None
     
     @classmethod    
     def get_instance(cls) -> "Drawer":
@@ -44,32 +45,48 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
     def started(self) -> bool:
         return self._started
     
-    #cameraセット    
     def set_camera(self, camera: IGameObject) -> None:
+        """cameraセット
+
+        Args:
+            camera (IGameObject): カメラとなるオブジェクト
+        """
+        
         self._camera = camera       
     
     #初期化       
-    def init(self) -> None:
+    def init(self, window: pygame.Surface) -> None:
+        """初期化
+
+        Args:
+            window (pygame.Surface): ゲームを映す画面
+        """
+        
         self.rect_list = []
-        size = pygame.display.get_surface().get_size()
+        self._window = window
+        size = window.get_size()
         self.__disp_size = Vector(size[0],size[1])
         pygame.sprite.LayeredDirty.__init__(self)
         self._started = False
     
-    #cameraの位置と拡大倍率から描写範囲を確定させる 
+     
     def make_camera_rect(self) -> pygame.Rect:
+        """cameraの位置と拡大倍率から描写範囲を確定させる
+
+        Raises:
+            NoCameraSettedException: カメラがセットされていない時の例外
+
+        Returns:
+            pygame.Rect: カメラの描写範囲
+        """
+        
         camera_size: Vector = self.__disp_size / (self._zoom/100)
         camera_rect: pygame.Rect = pygame.Rect(0,0,camera_size.x,camera_size.y)
         
-        try:
-            if self._camera != None:
+        if self._camera != None:
                 camera_rect.center = self._camera.rect.center
-            else:
-                raise NoCameraSettedException("No camera object is setted")
-        except NoCameraSettedException as ex:
-            print("Error: ", ex)
-            pygame.quit()
-            sys.exit(1)
+        else:
+            raise NoCameraSettedException("No camera object is setted")
         
         return camera_rect
         
@@ -83,6 +100,7 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
             i.rect.top -= camera_rect.top
         
         lens = pygame.Surface(camera_rect.size)
+        lens.fill([50,90,170,0])
         rects = pygame.sprite.LayeredDirty.draw(self,lens)
         
         screen = pygame.transform.scale(
@@ -90,10 +108,9 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
             [self.__disp_size.x, self.__disp_size.y]
         )
         
-        pygame.display.get_surface().blit(screen, [0,0])
+        self._window.blit(screen, [0,0])
         
         #pygame.display.update(self.rect_list)
-        pygame.display.flip()
         self.rect_list = []
         return rects
     
@@ -110,6 +127,10 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
             i.start()
             
         self._started = True
+    
+    def setup(self):
+        for i in self.sprites():
+            i.setup()
     
     #全てのオブジェクトを一斉に更新させる
     def update(self):

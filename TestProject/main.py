@@ -17,16 +17,23 @@ from pygameEasy import *
     
     
 PROJECT_PATH = os.getcwd()
-    
+
+#シーンのデータ入力処理
 def set_data(data: dict[str,Any]):
+    drawer = Drawer.get_instance()
+    
     for d in data["obj"]:
         obj = make_obj_from_data(d)
         add_obj(obj)
+        if(obj.name == data["start_camera"]):
+            drawer.set_camera(obj)
         
     for d in data["grp"]:
         grp = make_grp_from_data(d)
         add_grp(grp)
         
+    
+#シーンの開始時処理       
 def start():
     drawer = Drawer.get_instance()
     drawer.start()
@@ -34,7 +41,8 @@ def start():
     groups = Groups.get_instance()
     groups.start()
     
-    
+
+#シーンの更新
 def update():
     key = Key.get_instance()
     music = Music.get_instance()
@@ -63,10 +71,14 @@ def update():
         if(event.type == KEYUP):
             key.key_up_update(event)
             
+    pygame.display.flip()
+    
+#シーンのリロード      
 def reload():
     Groups.get_instance().init()
-    Drawer.get_instance().init()
-    
+    Drawer.get_instance().init(pygame.display.get_surface())
+
+#動かす
 def main():
     with open(PROJECT_PATH + "\project.json") as f:
         project = json.loads(f.read())
@@ -81,10 +93,9 @@ def main():
     music.set_path(PROJECT_PATH)
     
     screen = pygame.display.set_mode([0,0], DOUBLEBUF|HWSURFACE|NOFRAME)
-    scene_loader.end_scene
     
     drawer = Drawer.get_instance()
-    drawer.init()
+    drawer.init(pygame.display.get_surface())
     while(True):
         set_data(scene_loader.scene_data)
         start()
