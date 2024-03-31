@@ -33,7 +33,6 @@ def update(emulator: Emulator, editor: Editor, dt: float) -> None:
             editor (Editor): エディタ
             dt (float): フレーム間の時間
     """
-    emulator.update()
     
     for event in pygame.event.get():
         if(event.type == QUIT):
@@ -45,8 +44,10 @@ def update(emulator: Emulator, editor: Editor, dt: float) -> None:
                 pygame.quit()
                 sys.exit()
 
+        emulator.event_update(event)
         editor.event_update(event)
-
+        
+    emulator.update()
     editor.update(dt)
     
 def main():
@@ -54,6 +55,8 @@ def main():
         project: dict[str, str|int] = json.loads(f.read())
     
     pygame.init()
+    pygame.display.set_caption("Editor")
+    
     screen = pygame.display.set_mode([1920,1080])
     sc_rect = screen.get_rect()
     
@@ -65,7 +68,7 @@ def main():
     em_rect = emulate_window.get_rect()
     em_rect.left = sc_rect.width // 5
     
-    emulator = Emulator(PROJECT_PATH, emulate_window)
+    emulator = Emulator(PROJECT_PATH, emulate_window, em_rect)
     editor = Editor()
     clock = pygame.Clock()
     

@@ -32,7 +32,7 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
     
     @property
     def zoom(self) -> int:
-        return self.zoom
+        return self._zoom
     
     @zoom.setter
     def zoom(self, value: float) -> None:
@@ -100,7 +100,7 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
             i.rect.top -= camera_rect.top
         
         lens = pygame.Surface(camera_rect.size)
-        lens.fill([50,90,170,0])
+        lens.fill([50,70,100,0])
         rects = pygame.sprite.LayeredDirty.draw(self,lens)
         
         screen = pygame.transform.scale(

@@ -4,7 +4,7 @@
     "obj": 
     [
         {
-            "use": "shooting",
+            "use": "default",
             "class": "Camera",
             "pos": [0,0],
             "name": "camera",
