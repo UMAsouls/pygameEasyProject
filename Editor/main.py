@@ -75,7 +75,7 @@ def main():
     emulator.load(project["start_scene"])
     
     while(True):
-        dt = clock.tick(60) /1000
+        dt = clock.tick(60) /1000.0
         update(emulator, editor, dt)
         
         screen.fill([0,255,0,0])

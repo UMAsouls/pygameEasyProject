@@ -92,7 +92,13 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
         
     #描写
     #cameraとzoomから確定させた描写範囲をlensに映してdisp_sizeに拡大
-    def draw(self):
+    def draw(self) -> list[pygame.Rect]: 
+        """描写
+            cameraとzoomから確定させた描写範囲をlensに映してdisp_sizeに拡大
+            
+        Returns:
+            list[pygame.Rect]: 描写したものの画面上での位置
+        """
         camera_rect = self.make_camera_rect()
         
         for i in self.sprites():

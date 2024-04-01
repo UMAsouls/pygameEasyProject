@@ -77,7 +77,37 @@ class Emulator:
             add_grp(grp)
             
     def camera_move(self, mouse_rel: tuple[int,int]):
+        """マウスの動きでカメラを動かす
+
+        Args:
+            mouse_rel (tuple[int,int]): マウスの移動距離
+        """
         self.camera.position -= Vector(mouse_rel[0], mouse_rel[1])
+        
+    def draw_glit(self):
+        """グリット線を書く
+        """
+        
+        x_line_pos = self.rect.height//2 - self.camera.position.y
+        y_line_pos = self.rect.width//2 - self.camera.position.x
+        
+        #横線
+        pygame.draw.line(
+            self.window,
+            (100,100,100,0),
+            (0, x_line_pos),
+            (self.rect.width, x_line_pos),
+            5
+        )
+        
+        #縦線
+        pygame.draw.line(
+            self.window,
+            (100,100,100,0),
+            (y_line_pos, 0),
+            (y_line_pos, self.rect.height),
+            5
+        )
 
     def start(self):
         """シーンの開始時処理
@@ -138,7 +168,8 @@ class Emulator:
         """エミュレータの更新処理
         """
         self.drawer.setup()
-        self.drawer.draw() 
+        self.drawer.draw()
+        self.draw_glit()
         
         #self.camera.position += Vector(1,1)    
 
