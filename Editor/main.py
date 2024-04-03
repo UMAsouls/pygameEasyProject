@@ -72,7 +72,8 @@ def main():
     editor = Editor()
     clock = pygame.Clock()
     
-    emulator.load(project["start_scene"])
+    #emulator.load(project["start_scene"])
+    emulator.load("2player.json")
     
     while(True):
         dt = clock.tick(60) /1000.0

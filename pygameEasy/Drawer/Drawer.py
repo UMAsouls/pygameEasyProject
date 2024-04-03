@@ -1,6 +1,7 @@
 from typing import Any, Iterable
 import pygame
 import sys
+import time
 
 from pygame.sprite import AbstractGroup
 
@@ -89,6 +90,26 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
             raise NoCameraSettedException("No camera object is setted")
         
         return camera_rect
+    
+    def make_onlens_obj(self, obj: IGameObject, camera_rect: pygame.Rect) -> None:
+        rect = obj.rect.copy()
+        rect.left -= camera_rect.left
+        rect.top -= camera_rect.top
+        
+        rect_size: Vector = Vector(rect.width,rect.height)
+        rect_size *= (self._zoom/100)
+        rect_topleft: Vector = Vector(rect.left, rect.top)
+        rect_topleft *= (self._zoom/100)
+        
+        if(rect_size.x <= 1): rect_size.x = 1
+        if(rect_size.y <= 1): rect_size.y = 1
+        
+        rect.size = rect_size.change2list()
+        rect.topleft = rect_topleft.change2list()
+        
+        obj.image = pygame.transform.scale(obj.image, rect.size)
+        obj.rect = rect
+       
         
     #描写
     #cameraとzoomから確定させた描写範囲をlensに映してdisp_sizeに拡大
@@ -101,22 +122,19 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
         """
         camera_rect = self.make_camera_rect()
         
+        image_list = [i.image.copy() for i in self.sprites()]
+        rect_list = [i.rect.copy() for i in self.sprites()]
+        
         for i in self.sprites():
-            i.rect.left -= camera_rect.left
-            i.rect.top -= camera_rect.top
+            self.make_onlens_obj(i, camera_rect)
         
-        lens = pygame.Surface(camera_rect.size)
-        lens.fill([50,70,100,0])
-        rects = pygame.sprite.LayeredDirty.draw(self,lens)
+        self._window.fill([50,70,100,0])
+        rects = pygame.sprite.LayeredDirty.draw(self,self._window)
         
-        screen = pygame.transform.scale(
-            lens,
-            [self.__disp_size.x, self.__disp_size.y]
-        )
-        
-        self._window.blit(screen, [0,0])
-        
-        #pygame.display.update(self.rect_list)
+        for v,i in enumerate(self.sprites()):
+            i.image = image_list[v]
+            i.rect = rect_list[v]
+            
         self.rect_list = []
         return rects
     
@@ -140,6 +158,7 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
     
     #全てのオブジェクトを一斉に更新させる
     def update(self):
+        
         for i in self.sprites():
             collides: list[IGameObject] = pygame.sprite.spritecollide(i,self,False)
             for j in collides:

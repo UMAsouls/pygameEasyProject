@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 from typing import Any
 import json
+import time
 
 import sys
 
@@ -49,10 +50,6 @@ def update():
     drawer = Drawer.get_instance()
     groups = Groups.get_instance()
     
-    drawer.update()
-    drawer.draw()
-    
-    groups.update()
     
     music.update()
     key.update()
@@ -70,8 +67,15 @@ def update():
                 
         if(event.type == KEYUP):
             key.key_up_update(event)
-            
+                 
+    drawer.update()    
+    groups.update()
+    
+    drawer.draw()
+    t1 = time.time()
     pygame.display.flip()
+    t2 = time.time()
+    print("fliptime:", t2-t1)
     
 #シーンのリロード      
 def reload():
@@ -96,6 +100,7 @@ def main():
     
     drawer = Drawer.get_instance()
     drawer.init(pygame.display.get_surface())
+    clock = pygame.Clock()
     while(True):
         set_data(scene_loader.scene_data)
         start()

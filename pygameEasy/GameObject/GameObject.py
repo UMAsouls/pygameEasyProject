@@ -45,8 +45,12 @@ class GameObject(I0,I2,I3,I4):
         self._name :str = ""
         self._tag :str = ""
         
-        self.__base_image :pygame.Surface = pygame.Surface([0,0])
+        self.__base_image :pygame.Surface = pygame.Surface([1,1])
         self.__base_image.fill((0,0,0,255))
+        
+        self.__real_image :pygame.Surface = pygame.Surface([0,0])
+        
+        self.__real_rect :pygame.Rect = self.__real_image.get_rect()
         
         self._component = component
         
@@ -63,8 +67,8 @@ class GameObject(I0,I2,I3,I4):
         
         self.__killed: bool = False
         
-        self.__event_listners: dict[self.EventListener] = {}
-        self.__event_binders: dict[self.EventBinder] = {}
+        self.__event_listners: dict[str, self.EventListener] = {}
+        self.__event_binders: dict[str, self.EventBinder] = {}
         
         self.__data: dict[str,Any] = {}
     
@@ -115,12 +119,28 @@ class GameObject(I0,I2,I3,I4):
         self.__rect = rect
         
     @property
+    def real_rect(self) -> pygame.Rect:
+        return self.__real_rect
+    
+    @real_rect.setter
+    def real_rect(self, rect: pygame.Rect) -> None:
+        self.__real_rect = rect
+        
+    @property
     def image(self) -> pygame.Surface:
         return self.__image
     
     @image.setter
     def image(self, image: pygame.Surface) -> None:
         self.__image = image
+        
+    @property
+    def real_image(self) -> pygame.Surface:
+        return self.__real_image
+    
+    @real_image.setter
+    def real_image(self, image: pygame.Surface) -> None:
+        self.real_image = image
         
     @property
     def visible(self) -> bool:
@@ -285,7 +305,9 @@ class GameObject(I0,I2,I3,I4):
         pass
     
     #angleやsizeの値の変化に合わせてimageをセット
-    def __image_set(self):
+    def __image_set(self) -> None:
+        """angleやsizeの値の変化に合わせてimageをセット
+        """
         image: pygame.Surface = pygame.transform.scale(self._base_image,self.__size.change2list())
         image = pygame.transform.rotozoom(image, self.__angle, 1)
         rect = image.get_rect()
@@ -375,7 +397,7 @@ class GameObject(I0,I2,I3,I4):
         if("layer" in data): self.layer = data["layer"]
         
         if("path" in data):
-            self._base_image = pygame.image.load(self._path + f"/image/{data['path']}")
+            self._base_image = pygame.image.load(self._path + f"/image/{data['path']}").convert_alpha()
         self.image = self._base_image.subsurface(self._base_image.get_rect())
         self.rect = self.image.get_rect()
         
