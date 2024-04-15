@@ -15,8 +15,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pygameEasy import *
 
 import startup
-from Editor.GUI.gui import GUI
-from Editor.Emulator.emulator import Emulator
+from Editor import *
 
 #from pygameEasy.DependencyMaker import Dependency
     
@@ -57,6 +56,7 @@ def main():
     pygame.init()
     pygame.display.set_caption("Editor")
     
+    #データ設定
     screen = pygame.display.set_mode([1920,1080])
     sc_rect = screen.get_rect()
     
@@ -68,10 +68,16 @@ def main():
     em_rect = emulate_window.get_rect()
     em_rect.left = sc_rect.width // 5
     
+    #モジュール作成
     emulator = Emulator(PROJECT_PATH, emulate_window, em_rect)
-    editor = GUI()
+    scene_editor = SceneEditor(PROJECT_PATH)
+    inspector = Inspector()
+    obj_bar = ObjectBar()
+    editor = GUI(obj_bar,inspector,scene_editor,emulator)
     clock = pygame.Clock()
     
+    
+    #main
     emulator.load(project["start_scene"])
     
     while(True):

@@ -7,6 +7,8 @@ import sys
 
 from pygame_gui import UIManager
 
+from pygameEasy import GameObject
+
 #いつかモジュール化して消す
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -94,8 +96,8 @@ class Emulator(I0):
         """グリット線を書く
         """
         
-        x_line_pos = (self.rect.height//2 - self.camera.position.y) * (self.drawer.zoom/100)
-        y_line_pos = (self.rect.width//2 - self.camera.position.x) * (self.drawer.zoom/100)
+        x_line_pos = (self.rect.height//2 - self.camera.position.y * (self.drawer.zoom/100)) 
+        y_line_pos = (self.rect.width//2 - self.camera.position.x * (self.drawer.zoom/100)) 
         
         #横線
         pygame.draw.line(
@@ -121,9 +123,9 @@ class Emulator(I0):
         if(self._selecting_obj == None):
             return
         
-        rect = self._selecting_obj.rect
-        rect.left = (rect.left - self.camera.position.x) * (self.drawer.zoom/100)
-        rect.top = (rect.top - self.camera.position.y) * (self.drawer.zoom/100)
+        rect = self._selecting_obj.rect.copy()
+        rect.left = self.rect.width//2 + (rect.left - self.camera.position.x) * (self.drawer.zoom/100)
+        rect.top = self.rect.height//2 + (rect.top - self.camera.position.y) * (self.drawer.zoom/100)
         rect.width *= (self.drawer.zoom/100)
         rect.height *= (self.drawer.zoom/100)
         
@@ -162,17 +164,23 @@ class Emulator(I0):
             list[GameObject]: オブジェクト一覧
         """
         
-        real_pos = Vector(pos[0], pos[1])
-        real_pos -= self.camera.position
-        real_pos.x -= self.window.get_width()//2
-        real_pos.y -= self.window.get_height()//2
-        real_pos *= (self.drawer.zoom/100)
+        real_pos = Vector(pos[0] - self.rect.left, pos[1] - self.rect.top)
+        real_pos.x -= self.rect.width//2
+        real_pos.y -= self.rect.height//2
+        real_pos /= (self.drawer.zoom/100)
+        real_pos += self.camera.position
         
         return real_pos
     
     def change_obj(self, obj: GameObject) -> None:
         self._selecting_obj = obj
         self._changed = True
+        
+    def get_obj_selected(self) -> GameObject:
+        if(self._changed):
+            return self._selecting_obj
+        else:
+            return None
         
         
     def event_update(self, event:pygame.Event):
@@ -186,8 +194,10 @@ class Emulator(I0):
             if self.mouse_check(event.pos):
                 if event.button == 1:
                     real_pos = self.get_real_pos(event.pos)
-                    obj = self.drawer.get_sprites_at(real_pos.change2list())[0]
-                    self.change_obj(obj)
+                    objs = self.drawer.get_sprites_at(real_pos.change2list())
+                    print(len(objs))
+                    if(len(objs) >= 1):
+                        self.change_obj(objs[-1])
                 
                 if event.button == 2 :
                     self._camera_move_mode = True
@@ -215,6 +225,7 @@ class Emulator(I0):
         self.drawer.setup()
         self.drawer.draw()
         self.draw_glit()
+        self.draw_obj_frame()
         
         #self.camera.position += Vector(1,1)    
 

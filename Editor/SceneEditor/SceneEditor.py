@@ -2,8 +2,9 @@ import json
 from collections import deque
 
 from pygameEasy import *
+from Editor.GUI import ISceneEditor as I0
 
-class SceneEditor:
+class SceneEditor(I0):
     """シーンを編集するバックエンドクラス
     """
     

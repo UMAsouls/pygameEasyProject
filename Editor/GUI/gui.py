@@ -3,12 +3,12 @@ import pygame
 from pygame_gui import UIManager
 from pygame_gui.elements import UIWindow
 
-from . import IObjectBar,ISceneEditor,IEmulator
+from . import IObjectBar,ISceneEditor,IEmulator,Iinspector
 
 class GUI:
     """エディタのGUIを総括するクラス
     """
-    def __init__(self, obj_bar: IObjectBar, inspector, scene_editor: ISceneEditor, emulator: IEmulator) -> None:
+    def __init__(self, obj_bar: IObjectBar, inspector: Iinspector, scene_editor: ISceneEditor, emulator: IEmulator) -> None:
         dis_size = pygame.display.get_surface().get_size()
         self.ui_manager = UIManager(dis_size,"theme.json")
         
