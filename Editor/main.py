@@ -15,15 +15,15 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pygameEasy import *
 
 import startup
-from editor import Editor
-from emulator import Emulator
+from Editor.GUI.gui import GUI
+from Editor.Emulator.emulator import Emulator
 
 #from pygameEasy.DependencyMaker import Dependency
     
 PROJECT_PATH = os.path.abspath(startup.start())
 
 #更新処理
-def update(emulator: Emulator, editor: Editor, dt: float) -> None:
+def update(emulator: Emulator, editor: GUI, dt: float) -> None:
     """更新処理
 
         エディタの更新処理をここでまとめて行う
@@ -69,11 +69,10 @@ def main():
     em_rect.left = sc_rect.width // 5
     
     emulator = Emulator(PROJECT_PATH, emulate_window, em_rect)
-    editor = Editor()
+    editor = GUI()
     clock = pygame.Clock()
     
-    #emulator.load(project["start_scene"])
-    emulator.load("2player.json")
+    emulator.load(project["start_scene"])
     
     while(True):
         dt = clock.tick(60) /1000.0

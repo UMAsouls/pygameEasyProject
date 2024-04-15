@@ -39,6 +39,12 @@ class Emulator:
         self._camera_move_mode: bool = False
         """カメラが動くモードか否か
         """
+        self._selecting_obj: GameObject = None
+        """選択中のオブジェクト
+        """
+        self._changed: bool = False
+        """オブジェが変更されたか
+        """
         
         init(project_path)
         self.scene_loader.set_path(project_path)
@@ -130,7 +136,23 @@ class Emulator:
         """
         
         return self.rect.collidepoint(pos[0], pos[1])
+    
+    def get_objs_at(self, pos: tuple[int,int]) -> list[GameObject]:
+        """マウスの画面上に位置するオブジェクト一覧を出す
+
+        Args:
+            pos (tuple[int,int]): マウスの位置
+
+        Returns:
+            list[GameObject]: オブジェクト一覧
+        """
         
+        real_pos = Vector(pos[0], pos[1])
+        real_pos -= self.camera.position
+        real_pos.x -= self.window.get_width()//2
+        real_pos.y -= self.window.get_height()//2
+        
+        return self.drawer.get_sprites_at(real_pos.change2list())
         
         
     def event_update(self, event:pygame.Event):
@@ -144,6 +166,9 @@ class Emulator:
         
         if(event.type == MOUSEBUTTONDOWN):
             if self.mouse_check(event.pos):
+                if event.button == 1:
+                    pass
+                
                 if event.button == 2 :
                     self._camera_move_mode = True
 

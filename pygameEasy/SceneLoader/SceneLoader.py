@@ -31,7 +31,7 @@ class SceneLoader(Singleton):
         Args:
             path (str): シーンのパス
         """
-        path = self._path + "/json/" + path
+        path = self._path + "/scene/" + path
         with open(path) as f:
             data = json.load(f)
             

@@ -72,10 +72,7 @@ def update():
     groups.update()
     
     drawer.draw()
-    t1 = time.time()
     pygame.display.flip()
-    t2 = time.time()
-    print("fliptime:", t2-t1)
     
 #シーンのリロード      
 def reload():
