@@ -11,9 +11,9 @@ from pygame_gui import UIManager
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pygameEasy import *
-    
+from Editor.GUI import IEmulator as I0
 
-class Emulator:
+class Emulator(I0):
     """フレームワークのエミュレータ
     """
     
@@ -137,8 +137,8 @@ class Emulator:
         
         return self.rect.collidepoint(pos[0], pos[1])
     
-    def get_objs_at(self, pos: tuple[int,int]) -> list[GameObject]:
-        """マウスの画面上に位置するオブジェクト一覧を出す
+    def get_real_pos(self, pos: tuple[int,int]) -> Vector:
+        """マウスの画面上に位置をゲーム内の位置に変換
 
         Args:
             pos (tuple[int,int]): マウスの位置
@@ -151,14 +151,17 @@ class Emulator:
         real_pos -= self.camera.position
         real_pos.x -= self.window.get_width()//2
         real_pos.y -= self.window.get_height()//2
+        real_pos *= (self.drawer.zoom/100)
         
-        return self.drawer.get_sprites_at(real_pos.change2list())
+        return real_pos
+    
+    def change_obj(self, obj: GameObject) -> None:
+        self._selecting_obj = obj
+        self._changed = True
         
         
     def event_update(self, event:pygame.Event):
         """イベントに対する処理
-
-            今は何も設定してない
             
         Args:
             event (pygame.Event): イベント
@@ -167,7 +170,9 @@ class Emulator:
         if(event.type == MOUSEBUTTONDOWN):
             if self.mouse_check(event.pos):
                 if event.button == 1:
-                    pass
+                    real_pos = self.get_real_pos(event.pos)
+                    obj = self.drawer.get_sprites_at(real_pos.change2list())
+                    self.change_obj(obj)
                 
                 if event.button == 2 :
                     self._camera_move_mode = True
