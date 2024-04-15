@@ -94,8 +94,8 @@ class Emulator(I0):
         """グリット線を書く
         """
         
-        x_line_pos = self.rect.height//2 - self.camera.position.y
-        y_line_pos = self.rect.width//2 - self.camera.position.x
+        x_line_pos = (self.rect.height//2 - self.camera.position.y) * (self.drawer.zoom/100)
+        y_line_pos = (self.rect.width//2 - self.camera.position.x) * (self.drawer.zoom/100)
         
         #横線
         pygame.draw.line(
@@ -114,6 +114,21 @@ class Emulator(I0):
             (y_line_pos, self.rect.height),
             5
         )
+        
+    def draw_obj_frame(self) -> None:
+        """選択オブジェクトの枠を描く
+        """
+        if(self._selecting_obj == None):
+            return
+        
+        rect = self._selecting_obj.rect
+        rect.left = (rect.left - self.camera.position.x) * (self.drawer.zoom/100)
+        rect.top = (rect.top - self.camera.position.y) * (self.drawer.zoom/100)
+        rect.width *= (self.drawer.zoom/100)
+        rect.height *= (self.drawer.zoom/100)
+        
+        pygame.draw.rect(self.window,[255,0,0],rect, width=3)
+        
 
     def start(self):
         """シーンの開始時処理
@@ -171,7 +186,7 @@ class Emulator(I0):
             if self.mouse_check(event.pos):
                 if event.button == 1:
                     real_pos = self.get_real_pos(event.pos)
-                    obj = self.drawer.get_sprites_at(real_pos.change2list())
+                    obj = self.drawer.get_sprites_at(real_pos.change2list())[0]
                     self.change_obj(obj)
                 
                 if event.button == 2 :
