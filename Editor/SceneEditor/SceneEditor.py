@@ -29,11 +29,14 @@ class SceneEditor(I0):
         Args:
             path (str): シーンのパス
         """
-        with open(self._project_path+"/object/"+path) as f:
+        with open(self._project_path+"/scene/"+path) as f:
             self._scene = json.load(f)
             
+    def get_scene(self) -> dict[str, int | str | list | dict]:
+        return self._scene
+            
     
-    def obj_set_by_obj(self, obj: GameObject) -> None:
+    def set_obj_by_obj(self, obj: GameObject) -> None:
         """GameObjectによってオブジェクトセット
 
         Args:

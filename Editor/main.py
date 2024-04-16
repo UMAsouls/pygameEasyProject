@@ -50,6 +50,8 @@ def update(emulator: Emulator, editor: GUI, dt: float) -> None:
     editor.update(dt)
     
 def main():
+    """main
+    """
     with open(PROJECT_PATH + "\project.json") as f:
         project: dict[str, str|int] = json.loads(f.read())
     
@@ -60,6 +62,7 @@ def main():
     screen = pygame.display.set_mode([1920,1080])
     sc_rect = screen.get_rect()
     
+    #エミュレータ設定
     em_size = (
         sc_rect.width*3//5,
         sc_rect.height*3//5
@@ -68,18 +71,51 @@ def main():
     em_rect = emulate_window.get_rect()
     em_rect.left = sc_rect.width // 5
     
+    #インスペクター設定
+    in_size = (
+        sc_rect.width*1//5,
+        sc_rect.height*3//5
+    )
+    in_topleft = (
+        sc_rect.width*4//5,
+        0
+    )
+    in_rect = pygame.Rect(
+        in_topleft,
+        in_size
+    )
+    
+    #オブジェバー設定
+    bar_size = (
+        sc_rect.width*1//5,
+        sc_rect.height*3//5
+    )
+    bar_topleft = (
+        0,
+        0
+    )
+    bar_rect = pygame.Rect(
+        bar_topleft,
+        bar_size
+    )
+    
+    
+    ui_manager = UIManager(sc_rect.size,"theme.json")
+    
     #モジュール作成
     emulator = Emulator(PROJECT_PATH, emulate_window, em_rect)
     scene_editor = SceneEditor(PROJECT_PATH)
-    inspector = Inspector()
-    obj_bar = ObjectBar()
-    editor = GUI(obj_bar,inspector,scene_editor,emulator)
+    inspector = Inspector(ui_manager, in_rect)
+    obj_bar = ObjectBar(ui_manager, bar_rect)
+    editor = GUI(project,ui_manager,obj_bar,inspector,scene_editor,emulator)
     clock = pygame.Clock()
     
     
-    #main
+    #初期セットアップ
     emulator.load(project["start_scene"])
+    editor.start()
     
+    #メインループ
     while(True):
         dt = clock.tick(60) /1000.0
         update(emulator, editor, dt)

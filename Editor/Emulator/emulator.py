@@ -173,10 +173,21 @@ class Emulator(I0):
         return real_pos
     
     def change_obj(self, obj: GameObject) -> None:
+        """選択中オブジェクトを変える
+
+        Args:
+            obj (GameObject): 変更先オブジェクト
+        """
+        
         self._selecting_obj = obj
         self._changed = True
         
     def get_obj_selected(self) -> GameObject:
+        """オブジェクトが選択された時にそれを返す
+
+        Returns:
+            GameObject: 選択されたオブジェクト
+        """
         if(self._changed):
             return self._selecting_obj
         else:
@@ -195,7 +206,6 @@ class Emulator(I0):
                 if event.button == 1:
                     real_pos = self.get_real_pos(event.pos)
                     objs = self.drawer.get_sprites_at(real_pos.change2list())
-                    print(len(objs))
                     if(len(objs) >= 1):
                         self.change_obj(objs[-1])
                 
