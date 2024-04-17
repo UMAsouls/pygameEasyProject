@@ -9,9 +9,17 @@ class ISceneEditor(ABC):
         pass
     
     @abstractmethod
+    def set_obj_by_id(self, id: str) -> None:
+        pass
+    
+    @abstractmethod
     def scene_load(self, path:str) -> None:
         pass
     
     @abstractmethod
     def get_scene(self) -> dict[str, int|str|list|dict]:
         pass 
+    
+    @abstractmethod
+    def get_selecting_obj_id(self) -> str:
+        pass

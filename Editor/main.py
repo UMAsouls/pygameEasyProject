@@ -43,10 +43,8 @@ def update(emulator: Emulator, editor: GUI, dt: float) -> None:
                 pygame.quit()
                 sys.exit()
 
-        emulator.event_update(event)
         editor.event_update(event)
         
-    emulator.update()
     editor.update(dt)
     
 def main():
@@ -112,7 +110,7 @@ def main():
     
     
     #初期セットアップ
-    emulator.load(project["start_scene"])
+    
     editor.start()
     
     #メインループ

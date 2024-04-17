@@ -15,11 +15,14 @@ class SceneEditor(I0):
         self._scene: dict[str, str|int|list|dict] = {}
         """シーンのjsonデータ
         """
-        self._selected_obj: dict[str, str|int|list|dict] = None
+        self._selecting_obj: dict[str, str|int|list|dict] = None
         """選択されたオブジェクトのデータ
         """
-        self._selected_idx: list[int] = []
+        self._selecting_idx: list[int] = []
         """選択されたオブジェクトのインデックス
+        """
+        self._selecting_id: str = ""
+        """選択されたオブジェクトのid
         """
     
     
@@ -42,6 +45,8 @@ class SceneEditor(I0):
         Args:
             obj (GameObject): _description_
         """
+        self._selecting_id = ""
+        
         comp = obj.component
         obj_stack = deque()
         while(comp != None):
@@ -49,16 +54,43 @@ class SceneEditor(I0):
             comp = comp.parent
             
         obj_list: list[dict[str,int|str|list]] = self._scene["obj"]
-        idx: int = 0
         
-        while(not obj_stack):
+        while(len(obj_stack) > 0):
             obj = obj_stack.pop()
             
             for v,i in enumerate(obj_list):
                 if (obj.name == i["name"]):
-                    self._selected_obj = i
-                    self._selected_idx.append(v)
-                    obj_list = i["kid"]
+                    self._selecting_obj = i
+                    self._selecting_idx.append(v)
+                    self._selecting_id += obj.name + "."
+                    if(len(obj_stack) > 0):
+                        obj_list = i["kid"]
+                    
+        self._selecting_id = self._selecting_id[:-1]
+        
+    def set_obj_by_id(self, id: str) -> None:
+        """idによってオブジェクトを選ぶ
+
+        Args:
+            id (str): オブジェクトid
+        """
+        
+        names = id.split(".")
+        obj_list: list[dict[str,int|str|list]] = self._scene["obj"]
+        
+        for i in names:
+            for v,j in enumerate(obj_list):
+                if (i == j["name"]):
+                    self._selecting_obj = j
+                    self._selecting_idx.append(v)
+                    if("kid" in j):
+                        obj_list = j["kid"]
+                        
+        self._selecting_id = id
+        
+        
+    def get_selecting_obj_id(self) -> str:
+        return self._selecting_id
                     
                 
             

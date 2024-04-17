@@ -30,6 +30,7 @@ class GUI:
     def start(self):
         """スタート時処理
         """
+        self.emulator.load(self.project["start_scene"])
         self.scene_editor.scene_load(self.project["start_scene"])
         
         self.obj_bar.obj_load(self.scene_editor.get_scene()["obj"])
@@ -41,20 +42,31 @@ class GUI:
         Args:
             event (pygame.event.Event): イベント
         """
+        self.emulator.event_update(event)
+        
         self.ui_manager.process_events(event)
         
-    def update(self, dt: float):        
+        self.obj_bar.process_event(event)
+        
+    def update(self, dt: float): 
+        self.emulator.update()       
         self.ui_manager.update(dt)
         
         #エミュレータオブジェ選択時処理
         obj = self.emulator.get_obj_selected()
         if(obj != None):
             self.scene_editor.set_obj_by_obj(obj)
+            self.obj_bar.select_by_id(self.scene_editor.get_selecting_obj_id())
+            
         
         #オブジェバーオブジェ選択時処理
-        obj_data = self.obj_bar.get_obj_selected()
-        if(obj_data != None):
-            pass
+        id = self.obj_bar.get_obj_selected()
+        if(id != None):
+            self.scene_editor.set_obj_by_id(id)
+            self.emulator.select_by_id(id)
+            
+        self.emulator.end_set()
+        self.obj_bar.end_set()
         
     def draw(self, window: pygame.Surface):
         self.ui_manager.draw_ui(window)

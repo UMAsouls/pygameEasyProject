@@ -48,6 +48,10 @@ class Emulator(I0):
         """オブジェが変更されたか
         """
         
+        self.__mouse_pushing: bool = False
+        """マウスを長押ししてるか
+        """
+        
         init(project_path)
         self.scene_loader.set_path(project_path)
         self.drawer.init(self.window)
@@ -180,7 +184,11 @@ class Emulator(I0):
         """
         
         self._selecting_obj = obj
-        self._changed = True
+        
+    def select_by_id(self, id:str) -> None:
+        obj = self.groups.get_single_by_name(id)
+        
+        self.change_obj(obj)
         
     def get_obj_selected(self) -> GameObject:
         """オブジェクトが選択された時にそれを返す
@@ -203,11 +211,12 @@ class Emulator(I0):
         
         if(event.type == MOUSEBUTTONDOWN):
             if self.mouse_check(event.pos):
-                if event.button == 1:
+                if event.button == 1 and not self.__mouse_pushing:
                     real_pos = self.get_real_pos(event.pos)
                     objs = self.drawer.get_sprites_at(real_pos.change2list())
                     if(len(objs) >= 1):
                         self.change_obj(objs[-1])
+                        self._changed = True
                 
                 if event.button == 2 :
                     self._camera_move_mode = True
@@ -219,25 +228,33 @@ class Emulator(I0):
                     self.drawer.zoom -= 5
                     if(self.drawer.zoom < 10):
                         self.drawer.zoom = 5
+                        
                 
         if(event.type == MOUSEBUTTONUP):
+            
             if event.button == 2:
                 self._camera_move_mode = False
+                
                 
         if(event.type == MOUSEMOTION):
             if self._camera_move_mode:
                 self.camera_move(event.rel)
                 
+                
 
     def update(self):
         """エミュレータの更新処理
         """
+        
         self.drawer.setup()
         self.drawer.draw()
         self.draw_glit()
         self.draw_obj_frame()
         
-        #self.camera.position += Vector(1,1)    
+        #self.camera.position += Vector(1,1) 
+        
+    def end_set(self):
+        self._changed = False   
 
     def reload(self):
         """シーンの再読み込み前の初期化処理
