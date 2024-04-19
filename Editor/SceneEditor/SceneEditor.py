@@ -91,6 +91,9 @@ class SceneEditor(I0):
         
     def get_selecting_obj_id(self) -> str:
         return self._selecting_id
+    
+    def get_selecting_obj_data(self) -> dict[str, int | str | list | dict]:
+        return self._selecting_obj
                     
                 
             

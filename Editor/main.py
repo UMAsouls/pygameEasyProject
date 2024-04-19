@@ -110,7 +110,6 @@ def main():
     
     
     #初期セットアップ
-    
     editor.start()
     
     #メインループ

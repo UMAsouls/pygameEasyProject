@@ -36,6 +36,8 @@ class GUI:
         self.obj_bar.obj_load(self.scene_editor.get_scene()["obj"])
         self.obj_bar.recreate_ui()
         
+        self.inspector.recreate_ui()
+        
     def event_update(self, event: pygame.event.Event):
         """イベントアップデート
 
@@ -57,6 +59,7 @@ class GUI:
         if(obj != None):
             self.scene_editor.set_obj_by_obj(obj)
             self.obj_bar.select_by_id(self.scene_editor.get_selecting_obj_id())
+            self.inspector.set_obj_data(self.scene_editor.get_selecting_obj_data())
             
         
         #オブジェバーオブジェ選択時処理
@@ -64,6 +67,7 @@ class GUI:
         if(id != None):
             self.scene_editor.set_obj_by_id(id)
             self.emulator.select_by_id(id)
+            self.inspector.set_obj_data(self.scene_editor.get_selecting_obj_data())
             
         self.emulator.end_set()
         self.obj_bar.end_set()
