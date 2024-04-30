@@ -43,7 +43,7 @@ def update(emulator: Emulator, editor: GUI, dt: float) -> None:
                 pygame.quit()
                 sys.exit()
 
-        editor.event_update(event)
+        editor.process_events(event)
         
     editor.update(dt)
     

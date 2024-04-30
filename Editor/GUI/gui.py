@@ -5,6 +5,8 @@ from pygame_gui.elements import UIWindow
 
 from . import IObjectBar,ISceneEditor,IEmulator,Iinspector
 
+from Editor.__const import *
+
 class GUI:
     """エディタのGUIを総括するクラス
     """
@@ -38,8 +40,8 @@ class GUI:
         
         self.inspector.recreate_ui()
         
-    def event_update(self, event: pygame.event.Event):
-        """イベントアップデート
+    def process_events(self, event: pygame.event.Event):
+        """イベントの処理
 
         Args:
             event (pygame.event.Event): イベント
@@ -49,6 +51,14 @@ class GUI:
         self.ui_manager.process_events(event)
         
         self.obj_bar.process_event(event)
+        
+        self.inspector.process_event(event)
+        
+        if event.type == CHANGE_DATA_EVENT:
+            key = event.key
+            idx = event.idx
+            data = event.data
+            print(key, idx, data)
         
     def update(self, dt: float): 
         self.emulator.update()       

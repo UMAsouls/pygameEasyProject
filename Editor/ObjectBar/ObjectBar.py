@@ -18,7 +18,7 @@ class ObjButtonData:
         
         if("kid" in data):
             self.kids = [
-                ObjButtonData(i, Rect(rect.left+20, rect.top, rect.width, rect.height, data["name"]+"."))
+                ObjButtonData(i, Rect(rect.left+20, rect.top, rect.width, rect.height), data["name"]+".")
                 for i in data["kid"]
             ]
         

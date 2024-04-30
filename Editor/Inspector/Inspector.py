@@ -7,25 +7,36 @@ from pygame_gui import UIManager
 
 from pygame_gui.elements import \
     UIPanel,UIScrollingContainer,UITextEntryLine,UILabel
+    
+from pygame_gui import \
+    UI_TEXT_ENTRY_FINISHED
+    
+from Editor.__const import CHANGE_DATA_EVENT
+
+from .data_change_event import DataChangeEvent
 
 
-class DataType:
-    def __init__(self, name: str, data: str|int|list|dict) -> None:
+class DataCase:
+    def __init__(self, name: str, data: str|int|list|dict, id:str = "") -> None:
         self.name:str = name
         self.type: type = type(data)
-        self.data = data
+        self.data: self.type = data
+        self.id = id + self.name
         
         self.long:int = 1
-        self.elements: dict[str, "DataType"] = {}
+        self.type_list: list[type] = []
+        self.elements: dict[str, "DataCase"] = {}
         
         if(self.type == list):
             self.long = len(data)
+            self.type_list = [type(i) for i in data]
             
         elif(self.type == dict):
-            self.elements = {k: DataType(k, v) for k,v in self.data.items()}
+            self.elements = {k: DataCase(k, v, self.id+".") for k,v in self.data.items()}
             
         else:
             self.data = [self.data]
+            self.type_list = [self.type]
 
         self.panel: UIPanel = None
         self.title: UILabel = None
@@ -92,6 +103,36 @@ class DataType:
         rect.height = (title_size[1]+5) + entry_size[1] + 10
         self.panel.set_dimensions(rect.size)
         self.panel.rebuild()
+        
+    def text_entry_event(self, event : pygame.Event):
+        """テキスト入力時処理
+
+        Args:
+            event (pygame.Event): イベント
+        """
+        if self.type == dict:
+            for v,i in self.elements.items():
+                i.process_event(event)
+                
+        else:
+            for v,i in enumerate(self.text_entry):
+                if event.ui_element == i:
+                    self.data[v] = self.type_list[v](event.text)
+                    ev_dict = DataChangeEvent(self.id, v, self.type_list[v](event.text))
+                    ev = pygame.Event(CHANGE_DATA_EVENT, ev_dict.get_dict())
+                    pygame.event.post(ev)
+        
+    def process_event(self, event: pygame.Event):
+        """イベントの処理
+
+        Args:
+            event (pygame.Event): イベント
+        """
+        if event.type == UI_TEXT_ENTRY_FINISHED:
+            self.text_entry_event(event)
+            
+        
+        
 
 
 class Inspector(I0):
@@ -103,9 +144,13 @@ class Inspector(I0):
         self.panel: UIPanel = None
         self.container: UIScrollingContainer = None
         
-        self.elements: dict[str, DataType] = {}
+        self.elements: dict[str, DataCase] = {}
         
+    def process_event(self, event: pygame.Event) -> None:
+        for i in self.elements.values():
+            i.process_event(event)
         
+            
         
     def recreate_ui(self) -> None:
         """UIを構成する
@@ -130,7 +175,7 @@ class Inspector(I0):
     def set_obj_data(self, data: dict[str, str | int | list | dict]) -> None:
         self._selecting_obj = data
         self.elements = {
-            k: DataType(k, v) for k,v in self._selecting_obj.items()
+            k: DataCase(k, v) for k,v in self._selecting_obj.items()
         }
         
         self.recreate_ui()
