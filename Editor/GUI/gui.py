@@ -3,9 +3,13 @@ import pygame
 from pygame_gui import UIManager
 from pygame_gui.elements import UIWindow
 
-from . import IObjectBar,ISceneEditor,IEmulator,Iinspector
+from .IObjectBar import IObjectBar
+from .Iinspector import Iinspector
+from .ISceneEditor import ISceneEditor
+from .IEmulator import IEmulator
 
-from Editor.__const import *
+from __const import *
+
 
 class GUI:
     """エディタのGUIを総括するクラス
@@ -58,7 +62,11 @@ class GUI:
             key = event.key
             idx = event.idx
             data = event.data
-            print(key, idx, data)
+            self.scene_editor.data_change(key, idx, data)
+            
+        if event.type == CHANGE_OBJ_POS_EVENT:
+            pos = event.pos
+            print(pos)
         
     def update(self, dt: float): 
         self.emulator.update()       

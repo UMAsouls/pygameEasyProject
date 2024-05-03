@@ -1,24 +1,14 @@
+from pygame import Event
+from dataclasses import dataclass
 
-from Editor.GUI import IDataChangeEvent
+from GUI import EventData
+from __const import CHANGE_DATA_EVENT
 
-class DataChangeEvent(IDataChangeEvent):
+@dataclass
+class DataChangeEvent(EventData):
+    key:str
+    idx:int
+    data: int|str
     
-    def __init__(self, key: str, idx: int, data: int|str) -> None:
-        self._key = key
-        self._idx = idx
-        self._data = data
-        
-    @property
-    def key(self) -> str:
-        return self._key
-    
-    @property
-    def idx(self) -> int:
-        return self._idx
-    
-    @property
-    def data(self) -> int | str:
-        return self._data
-    
-    def get_dict(self) -> dict:
-        return {"key": self.key, "idx": self.idx, "data": self.data}
+    def make_event(self) -> Event:
+        return super().make_event(CHANGE_DATA_EVENT, key=self.key, idx=self.idx, data=self.data)

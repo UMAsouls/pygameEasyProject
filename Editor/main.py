@@ -7,6 +7,7 @@ import sys
 
 from pygame_gui import UIManager
 
+#確実にEditorの部分を実行ディレクトリにするために必要
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 #いつかモジュール化して消す
@@ -14,8 +15,16 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pygameEasy import *
 
+#sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+print(sys.path)
+
 import startup
-from Editor import *
+from Emulator.emulator import Emulator
+from GUI import GUI
+from Inspector.Inspector import Inspector
+from SceneEditor.SceneEditor import SceneEditor
+from ObjectBar.ObjectBar import ObjectBar
 
 #from pygameEasy.DependencyMaker import Dependency
     

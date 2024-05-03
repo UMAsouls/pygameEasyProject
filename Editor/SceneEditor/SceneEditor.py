@@ -2,7 +2,7 @@ import json
 from collections import deque
 
 from pygameEasy import *
-from Editor.GUI import ISceneEditor as I0
+from GUI.ISceneEditor import ISceneEditor as I0
 
 class SceneEditor(I0):
     """シーンを編集するバックエンドクラス
@@ -24,7 +24,6 @@ class SceneEditor(I0):
         self._selecting_id: str = ""
         """選択されたオブジェクトのid
         """
-    
     
     def scene_load(self, path: str) -> None:
         """シーンロード
@@ -94,6 +93,26 @@ class SceneEditor(I0):
     
     def get_selecting_obj_data(self) -> dict[str, int | str | list | dict]:
         return self._selecting_obj
+    
+    def data_change(self, key: str, idx: int, data: int | str) -> None:
+        """データ変更
+
+        Args:
+            key (): 位置
+            idx (int): インデックス（データがリストのときのみ）
+            data (int | str): 変更後のデータ
+        """
+        key_list = key.split(".")
+        
+        d = self._selecting_obj
+        
+        for i in key_list[:-1]:
+            d = d[i]
+            
+        if(type(d[key_list[-1]]) == list):
+            d[key_list[-1]][0] = data
+        else:
+            d[key_list[-1]] = data
                     
                 
             

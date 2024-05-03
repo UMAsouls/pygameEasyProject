@@ -27,3 +27,7 @@ class ISceneEditor(ABC):
     @abstractmethod
     def get_selecting_obj_data(self) -> dict[str, int|str|list|dict]:
         pass
+    
+    @abstractmethod
+    def data_change(self, key: str, idx: int, data: int | str) -> None:
+        pass

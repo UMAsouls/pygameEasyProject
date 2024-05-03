@@ -1,5 +1,3 @@
-from Editor.GUI import Iinspector as I0
-
 from pygame import Rect
 import pygame
 
@@ -11,7 +9,9 @@ from pygame_gui.elements import \
 from pygame_gui import \
     UI_TEXT_ENTRY_FINISHED
     
-from Editor.__const import CHANGE_DATA_EVENT
+from GUI.Iinspector import Iinspector as I0
+    
+from __const import CHANGE_DATA_EVENT
 
 from .data_change_event import DataChangeEvent
 
@@ -118,9 +118,8 @@ class DataCase:
             for v,i in enumerate(self.text_entry):
                 if event.ui_element == i:
                     self.data[v] = self.type_list[v](event.text)
-                    ev_dict = DataChangeEvent(self.id, v, self.type_list[v](event.text))
-                    ev = pygame.Event(CHANGE_DATA_EVENT, ev_dict.get_dict())
-                    pygame.event.post(ev)
+                    ev = DataChangeEvent(self.id, v, self.type_list[v](event.text))
+                    pygame.event.post(ev.make_event())
         
     def process_event(self, event: pygame.Event):
         """イベントの処理

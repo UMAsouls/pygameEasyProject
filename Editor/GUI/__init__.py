@@ -1,5 +1,2 @@
-from GUI.IObjectBar import IObjectBar
-from GUI.ISceneEditor import ISceneEditor
-from GUI.IEmulator import IEmulator
-from GUI.Iinspector import Iinspector
-from Editor.GUI.IDataChangeEvent import IDataChangeEvent
+from GUI.gui import GUI
+from GUI.EventData import EventData

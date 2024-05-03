@@ -1,4 +1,4 @@
-from Editor.GUI import IObjectBar as I0
+from Editor.GUI.IObjectBar import IObjectBar as I0
 
 from pygame import Rect,Event
 

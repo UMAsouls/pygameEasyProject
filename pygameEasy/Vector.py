@@ -88,8 +88,8 @@ class Vector:
             return Vector(0,0)
         return Vector(self.x/self.mag(), self.y/self.mag())
     
-    def change2list(self) -> list[int]:
-        return [self.x, self.y]
+    def change2list(self) -> tuple[int,int]:
+        return (self.x, self.y)
         
     
 #デバック用

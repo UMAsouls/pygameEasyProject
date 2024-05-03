@@ -5,15 +5,17 @@ from typing import Any
 import json
 import sys
 
-from pygame_gui import UIManager
-
 from pygameEasy import GameObject
 
 #いつかモジュール化して消す
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pygameEasy import *
-from Editor.GUI import IEmulator as I0
+from GUI.IEmulator import IEmulator as I0
+
+from .change_obj_pos_event import ChangeObjPosEvent
+
+from __const import CHANGE_OBJ_POS_EVENT
 
 class Emulator(I0):
     """フレームワークのエミュレータ
@@ -48,9 +50,11 @@ class Emulator(I0):
         """オブジェが変更されたか
         """
         
-        self.__mouse_pushing: bool = False
-        """マウスを長押ししてるか
+        self.__obj_moving: bool = False
+        """オブジェを動かしているか
         """
+        
+        self.mover_rect: pygame.Rect = pygame.Rect(0,0,15,15)
         
         init(project_path)
         self.scene_loader.set_path(project_path)
@@ -94,7 +98,20 @@ class Emulator(I0):
         Args:
             mouse_rel (tuple[int,int]): マウスの移動距離
         """
-        self.camera.position -= Vector(mouse_rel[0], mouse_rel[1])
+        self.camera.position -= Vector(mouse_rel[0], mouse_rel[1]) / (self.drawer.zoom/100)
+        
+        
+    def obj_move(self, mouse_rel: tuple[int, int]):
+        """マウスの動きで選択オブジェクトを動かす
+
+        Args:
+            mouse_rel (tuple[int, int]): マウスの移動距離
+        """
+        
+        self._selecting_obj.position += Vector(mouse_rel[0], mouse_rel[1]) / (self.drawer.zoom/100)
+        event = ChangeObjPosEvent(self._selecting_obj.position.change2list())
+        pygame.event.post(event.make_event())
+        
         
     def draw_glit(self):
         """グリット線を書く
@@ -135,6 +152,20 @@ class Emulator(I0):
         
         pygame.draw.rect(self.window,[255,0,0],rect, width=3)
         
+    def draw_obj_mover(self) -> None:
+        """選択オブジェクトのムーバーを描く
+        """
+        
+        if(self._selecting_obj == None):
+            return
+        
+        rect = self._selecting_obj.rect.copy()
+        x = self.rect.width//2 + (rect.centerx - self.camera.position.x) * (self.drawer.zoom/100)
+        y = self.rect.height//2 + (rect.centery - self.camera.position.y) * (self.drawer.zoom/100)
+        self.mover_rect.center = (x,y)
+        
+        pygame.draw.ellipse(self.window, (255,100,50), rect = self.mover_rect)
+        
 
     def start(self):
         """シーンの開始時処理
@@ -159,10 +190,10 @@ class Emulator(I0):
         return self.rect.collidepoint(pos[0], pos[1])
     
     def get_real_pos(self, pos: tuple[int,int]) -> Vector:
-        """マウスの画面上に位置をゲーム内の位置に変換
+        """画面上の位置情報をゲーム内の位置に変換
 
         Args:
-            pos (tuple[int,int]): マウスの位置
+            pos (tuple[int,int]): 位置情報
 
         Returns:
             list[GameObject]: オブジェクト一覧
@@ -175,6 +206,24 @@ class Emulator(I0):
         real_pos += self.camera.position
         
         return real_pos
+    
+    def check_mover(self, pos: tuple[int,int]) -> bool:
+        """ムーバーの位置にあるか
+
+        Args:
+            pos (tuple[int,int]): 画面上の位置
+
+        Returns:
+            bool: 判定
+        """
+        
+        pos = (
+            pos[0] - self.rect.left,
+            pos[1] - self.rect.top
+        )
+        
+        
+        return self.mover_rect.collidepoint(pos[0], pos[1])
     
     def change_obj(self, obj: GameObject) -> None:
         """選択中オブジェクトを変える
@@ -210,27 +259,36 @@ class Emulator(I0):
         """
         
         if(event.type == MOUSEBUTTONDOWN):
-            if self.mouse_check(event.pos):
-                if event.button == 1 and not self.__mouse_pushing:
-                    real_pos = self.get_real_pos(event.pos)
-                    objs = self.drawer.get_sprites_at(real_pos.change2list())
-                    if(len(objs) >= 1):
-                        self.change_obj(objs[-1])
-                        self._changed = True
+            if not self.mouse_check(event.pos):
+                return
+            
+            if event.button == 1:
+                if self.check_mover(event.pos):
+                    self.__obj_moving = True
+                    return
                 
-                if event.button == 2 :
-                    self._camera_move_mode = True
+                real_pos = self.get_real_pos(event.pos)
+                objs = self.drawer.get_sprites_at(real_pos.change2list())
+                if(len(objs) >= 1):
+                    self.change_obj(objs[-1])
+                    self._changed = True
+                
+            if event.button == 2 :
+                self._camera_move_mode = True
 
-                if event.button == 4:
-                    self.drawer.zoom += 5
+            if event.button == 4:
+                self.drawer.zoom += 5
 
-                if event.button == 5:
-                    self.drawer.zoom -= 5
-                    if(self.drawer.zoom < 10):
-                        self.drawer.zoom = 5
+            if event.button == 5:
+                self.drawer.zoom -= 5
+                if(self.drawer.zoom < 10):
+                    self.drawer.zoom = 5
+                
                         
                 
         if(event.type == MOUSEBUTTONUP):
+            if event.button == 1:
+                self.__obj_moving = False
             
             if event.button == 2:
                 self._camera_move_mode = False
@@ -239,6 +297,9 @@ class Emulator(I0):
         if(event.type == MOUSEMOTION):
             if self._camera_move_mode:
                 self.camera_move(event.rel)
+                
+            if self.__obj_moving:
+                self.obj_move(event.rel)
                 
                 
 
@@ -250,6 +311,7 @@ class Emulator(I0):
         self.drawer.draw()
         self.draw_glit()
         self.draw_obj_frame()
+        self.draw_obj_mover()
         
         #self.camera.position += Vector(1,1) 
         
