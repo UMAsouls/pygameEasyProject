@@ -17,8 +17,6 @@ from pygameEasy import *
 
 #sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-print(sys.path)
-
 import startup
 from Emulator.emulator import Emulator
 from GUI import GUI

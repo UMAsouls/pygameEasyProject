@@ -66,7 +66,10 @@ class GUI:
             
         if event.type == CHANGE_OBJ_POS_EVENT:
             pos = event.pos
-            print(pos)
+            self.emulator.obj_pos_set(pos)
+            self.scene_editor.data_change("pos", 0, pos[0])
+            self.scene_editor.data_change("pos", 1, pos[1])
+            self.inspector.pos_data_change(pos)
         
     def update(self, dt: float): 
         self.emulator.update()       

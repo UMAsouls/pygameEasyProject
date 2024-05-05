@@ -38,7 +38,7 @@ class Emulator(I0):
         """エミュレータの画面
         """
         self.rect: pygame.Rect = rect
-        """エミュレータの描写範囲（四角形情報)
+        """エミュレータの描写範囲（四角形情報）
         """
         self._camera_move_mode: bool = False
         """カメラが動くモードか否か
@@ -112,6 +112,9 @@ class Emulator(I0):
         event = ChangeObjPosEvent(self._selecting_obj.position.change2list())
         pygame.event.post(event.make_event())
         
+    def obj_pos_set(self, pos: tuple[int, int]) -> None:
+        self._selecting_obj.position = Vector(pos[0], pos[1])
+        
         
     def draw_glit(self):
         """グリット線を書く
@@ -159,9 +162,9 @@ class Emulator(I0):
         if(self._selecting_obj == None):
             return
         
-        rect = self._selecting_obj.rect.copy()
-        x = self.rect.width//2 + (rect.centerx - self.camera.position.x) * (self.drawer.zoom/100)
-        y = self.rect.height//2 + (rect.centery - self.camera.position.y) * (self.drawer.zoom/100)
+        pos = self._selecting_obj.position
+        x = self.rect.width//2 + (pos.x - self.camera.position.x) * (self.drawer.zoom/100)
+        y = self.rect.height//2 + (pos.y - self.camera.position.y) * (self.drawer.zoom/100)
         self.mover_rect.center = (x,y)
         
         pygame.draw.ellipse(self.window, (255,100,50), rect = self.mover_rect)

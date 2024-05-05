@@ -14,3 +14,7 @@ class Iinspector(ABC):
     @abstractmethod
     def process_event(self, event: pygame.Event) -> None:
         pass
+    
+    @abstractmethod
+    def pos_data_change(self, data: tuple[int, int]) -> None:
+        pass

@@ -110,7 +110,7 @@ class SceneEditor(I0):
             d = d[i]
             
         if(type(d[key_list[-1]]) == list):
-            d[key_list[-1]][0] = data
+            d[key_list[-1]][idx] = data
         else:
             d[key_list[-1]] = data
                     

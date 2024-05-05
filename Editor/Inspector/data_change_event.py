@@ -11,4 +11,4 @@ class DataChangeEvent(EventData):
     data: int|str
     
     def make_event(self) -> Event:
-        return super().make_event(CHANGE_DATA_EVENT, key=self.key, idx=self.idx, data=self.data)
+        return Event(CHANGE_DATA_EVENT, key=self.key, idx=self.idx, data=self.data)

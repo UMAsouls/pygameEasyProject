@@ -14,13 +14,15 @@ from GUI.Iinspector import Iinspector as I0
 from __const import CHANGE_DATA_EVENT
 
 from .data_change_event import DataChangeEvent
+from .change_obj_pos_event import ChangeObjPosEvent
 
 
 class DataCase:
-    def __init__(self, name: str, data: str|int|list|dict, id:str = "") -> None:
+    def __init__(self, name: str, data: str|int|list|dict, nec_key: list[str], id:str = "") -> None:
         self.name:str = name
         self.type: type = type(data)
         self.data: self.type = data
+        self.nec_key: list[str] = nec_key
         self.id = id + self.name
         
         self.long:int = 1
@@ -32,7 +34,7 @@ class DataCase:
             self.type_list = [type(i) for i in data]
             
         elif(self.type == dict):
-            self.elements = {k: DataCase(k, v, self.id+".") for k,v in self.data.items()}
+            self.elements = {k: DataCase(k, v, nec_key, self.id+".") for k,v in self.data.items()}
             
         else:
             self.data = [self.data]
@@ -104,6 +106,22 @@ class DataCase:
         self.panel.set_dimensions(rect.size)
         self.panel.rebuild()
         
+    def post_pos_change_event(self) -> None:
+        """位置変更時の処理
+
+        Args:
+            idx (int): インデックス
+            data (int): データ本体
+        """
+        if self.id != "pos":
+            raise Exception("This is not pos data place")
+        
+        pos = (int(self.data[0]), int(self.data[1]))
+        
+        event = ChangeObjPosEvent(pos)
+        pygame.event.post(event.make_event())
+        
+        
     def text_entry_event(self, event : pygame.Event):
         """テキスト入力時処理
 
@@ -118,6 +136,10 @@ class DataCase:
             for v,i in enumerate(self.text_entry):
                 if event.ui_element == i:
                     self.data[v] = self.type_list[v](event.text)
+                    
+                    if self.id == "pos":
+                        self.post_pos_change_event()
+                    
                     ev = DataChangeEvent(self.id, v, self.type_list[v](event.text))
                     pygame.event.post(ev.make_event())
         
@@ -129,6 +151,10 @@ class DataCase:
         """
         if event.type == UI_TEXT_ENTRY_FINISHED:
             self.text_entry_event(event)
+            
+        
+    def text_change(self, idx: int, data: int | str) -> None:
+        self.text_entry[idx].set_text(str(data))
             
         
         
@@ -145,11 +171,12 @@ class Inspector(I0):
         
         self.elements: dict[str, DataCase] = {}
         
+        self.nec_key: list[str] = ["pos"]
+        
     def process_event(self, event: pygame.Event) -> None:
         for i in self.elements.values():
             i.process_event(event)
         
-            
         
     def recreate_ui(self) -> None:
         """UIを構成する
@@ -174,7 +201,17 @@ class Inspector(I0):
     def set_obj_data(self, data: dict[str, str | int | list | dict]) -> None:
         self._selecting_obj = data
         self.elements = {
-            k: DataCase(k, v) for k,v in self._selecting_obj.items()
+            k: DataCase(k, v, self.nec_key) for k,v in self._selecting_obj.items()
         }
         
         self.recreate_ui()
+        
+    def pos_data_change(self, data: tuple[int, int]) -> None:
+        """pos部分のデータを設定
+
+        Args:
+            data (tuple[int, int]): pos部分データ
+        """
+        
+        self.elements["pos"].text_change(0, data[0])
+        self.elements["pos"].text_change(1, data[1])
