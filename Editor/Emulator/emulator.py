@@ -66,6 +66,7 @@ class Emulator(I0):
         Args:
             scene_path (str):  シーンのパス
         """
+        self.reload()
         
         self.scene_loader.scene_load(scene_path)
         self.set_data(self.scene_loader.scene_data)
@@ -76,6 +77,8 @@ class Emulator(I0):
         self.camera = make_obj_from_data(c_data)
         
         self.drawer.set_camera(self.camera)
+        
+        self._selecting_obj = None
     
     def set_data(self, data: dict[str, str|int]):
         """シーンのデータ読み込み
@@ -326,7 +329,9 @@ class Emulator(I0):
         """
         
         self.groups.init()
-        self.drawer.init()
+        self.drawer.init(self.window)
+        
+    
 
 
 if __name__ == "__main__" :

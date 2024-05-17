@@ -11,7 +11,7 @@ from pygame_gui import \
     
 from GUI.Iinspector import Iinspector as I0
     
-from __const import CHANGE_DATA_EVENT
+from __const import CHANGE_DATA_EVENT,recreate_event_post
 
 from .data_change_event import DataChangeEvent
 from .change_obj_pos_event import ChangeObjPosEvent
@@ -173,6 +173,11 @@ class Inspector(I0):
         
         self.nec_key: list[str] = ["pos"]
         
+    def reset(self) -> None:
+        self._selecting_obj = None
+        self.elements = {}
+        recreate_event_post()
+        
     def process_event(self, event: pygame.Event) -> None:
         for i in self.elements.values():
             i.process_event(event)
@@ -204,7 +209,7 @@ class Inspector(I0):
             k: DataCase(k, v, self.nec_key) for k,v in self._selecting_obj.items()
         }
         
-        self.recreate_ui()
+        recreate_event_post()
         
     def pos_data_change(self, data: tuple[int, int]) -> None:
         """pos部分のデータを設定

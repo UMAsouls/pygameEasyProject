@@ -25,6 +25,7 @@ from GUI import GUI
 from Inspector.Inspector import Inspector
 from SceneEditor.SceneEditor import SceneEditor
 from ObjectBar.ObjectBar import ObjectBar
+from Explorer.Explorer import Explorer
 
 #from pygameEasy.DependencyMaker import Dependency
     
@@ -106,6 +107,19 @@ def main():
         bar_size
     )
     
+    exp_size = (
+        sc_rect.width,
+        sc_rect.height*2//5
+    )
+    exp_topleft = (
+        0,
+        sc_rect.height*3//5
+    )
+    exp_rect = pygame.Rect(
+        exp_topleft,
+        exp_size
+    )
+    
     
     ui_manager = UIManager(sc_rect.size,"theme.json")
     
@@ -114,7 +128,8 @@ def main():
     scene_editor = SceneEditor(PROJECT_PATH)
     inspector = Inspector(ui_manager, in_rect)
     obj_bar = ObjectBar(ui_manager, bar_rect)
-    editor = GUI(project,ui_manager,obj_bar,inspector,scene_editor,emulator)
+    explorer = Explorer(ui_manager,exp_rect)
+    editor = GUI(project,ui_manager,obj_bar,inspector,scene_editor,emulator,explorer)
     clock = pygame.Clock()
     
     

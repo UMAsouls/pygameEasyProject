@@ -22,7 +22,8 @@ class GUI:
         obj_bar: IObjectBar, 
         inspector: Iinspector, 
         scene_editor: ISceneEditor, 
-        emulator: IEmulator
+        emulator: IEmulator,
+        explorer: IExplorer
         ) -> None:
         
         self.project = project
@@ -33,7 +34,16 @@ class GUI:
         self.inspector = inspector
         self.obj_bar = obj_bar
         self.emulator = emulator
-        #self.explorer = explorer
+        self.explorer = explorer
+        
+    def recreate_ui(self) -> None:
+        """ui再構成
+        """
+        self.ui_manager.clear_and_reset()
+        self.obj_bar.recreate_ui()
+        self.inspector.recreate_ui()
+        self.explorer.recreate_ui()
+        
         
     def start(self):
         """スタート時処理
@@ -45,6 +55,9 @@ class GUI:
         self.obj_bar.recreate_ui()
         
         self.inspector.recreate_ui()
+        
+        self.explorer.load(self.project["path"])
+        self.explorer.recreate_ui()
         
     def process_events(self, event: pygame.event.Event):
         """イベントの処理
@@ -60,6 +73,8 @@ class GUI:
         
         self.inspector.process_event(event)
         
+        self.explorer.process_event(event)
+        
         #オブジェクトデータ変更時イベント
         if event.type == CHANGE_DATA_EVENT:
             key = event.key
@@ -74,11 +89,17 @@ class GUI:
             self.scene_editor.data_change("pos", 0, pos[0])
             self.scene_editor.data_change("pos", 1, pos[1])
             self.inspector.pos_data_change(pos)
-        
-        
+            
+        #シーン変更イベント
         if event.type == CHANGE_SCENE_EVENT:
-            path = event.path
-            print(path)
+            path: str = event.path
+            self.scene_editor.scene_load(path)
+            self.emulator.load(path)
+            self.inspector.reset()
+            self.obj_bar.obj_load(self.scene_editor.get_scene()["obj"])
+            
+        if event.type == RECREATE_UI_EVENT:
+            self.recreate_ui()
             
         
     def update(self, dt: float): 

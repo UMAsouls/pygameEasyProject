@@ -14,7 +14,7 @@ from pygame_gui import \
     
 from GUI.IExplorer import IExplorer as I0
 
-from change_scene_event import ChangeSceneEvent
+from .change_scene_event import ChangeSceneEvent
     
 from __const import CHANGE_SCENE_EVENT
 

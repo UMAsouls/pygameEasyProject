@@ -1,3 +1,4 @@
 {
-    "start_scene": "2player.json"
+    "start_scene": "2player.json",
+    "path": "C:\\Users\\admin\\pygameEasyProject\\TestProject"
 }

@@ -2,6 +2,8 @@ from Editor.GUI.IObjectBar import IObjectBar as I0
 
 from pygame import Rect,Event
 
+from __const import recreate_event_post
+
 import pygame_gui
 from pygame_gui import UIManager
 from pygame_gui.elements import UIPanel,UIScrollingContainer,UIButton
@@ -93,7 +95,7 @@ class ObjectBar(I0):
             self.selecting_obj.selected = False
         self.selecting_obj = obj
         self.selecting_obj.selected = True
-        self.recreate_ui()
+        recreate_event_post()
         
     def select_by_id(self, id: str) -> None:
         id = id.split(".")
@@ -112,8 +114,6 @@ class ObjectBar(I0):
         self.obj_data = []
         self.obj_buttons = []
         self.scrollable_size = (0,0)
-        
-        self.ui_manager.clear_and_reset()
         
         self.panel = UIPanel(self.rect, manager=self.ui_manager)
         

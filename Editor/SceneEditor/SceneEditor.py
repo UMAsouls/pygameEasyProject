@@ -34,6 +34,9 @@ class SceneEditor(I0):
         with open(self._project_path+"/scene/"+path) as f:
             self._scene = json.load(f)
             
+        self._selecting_obj = None
+        self._selecting_id = ""
+            
     def get_scene(self) -> dict[str, int | str | list | dict]:
         return self._scene
             
