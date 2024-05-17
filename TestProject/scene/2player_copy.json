@@ -1,173 +1,280 @@
 {
-    "type": "scene",
-
-    "obj": 
-    [
+  "type": "scene",
+  "obj": [
+    {
+      "use": "default",
+      "class": "Camera",
+      "pos": [
+        0,
+        0
+      ],
+      "name": "camera",
+      "tag": "camera",
+      "layer": 0
+    },
+    {
+      "use": "shooting",
+      "class": "Defense",
+      "pos": [
+        -90,
+        -218
+      ],
+      "name": "defence",
+      "tag": "Test",
+      "path": "fighter_a.png",
+      "size": [
+        110,
+        110
+      ],
+      "layer": 5,
+      "speed": 12,
+      "kid": [
         {
-            "use": "default",
-            "class": "Camera",
-            "pos": [0,0],
-            "name": "camera",
-            "tag": "camera",
-            "layer": 0
-        },
-
-        {
-            "use": "shooting",
-            "class": "Defense", 
-            "pos": [0, 0], 
-            "name" : "defence", 
-            "tag": "Test", 
-            "path": "fighter_a.png", 
-            "size":[110,110],
-            "layer":5, 
-            "speed": 12,
-            "kid": [
-                {"use": "shooting", "class": "Bat", "pos":[0,0], "name":"bat","tag":"Bat","path":"bat_red.png","layer":6, "speed":7}
-            ]
-        },
-        {"use": "shooting","class": "Background", "pos" : [0,0], "name" : "bg", "tag": "bg", "path" : "background.png", "layer":0},
-        {
-            "use": "shooting",
-            "class": "Attack", 
-            "pos": [0,0], 
-            "name" : "attack", 
-            "tag": "Test", 
-            "path": "fighter_c.png",
-            "size":[110,110],
-            "layer":5, 
-            "speed": 15,
-            "ball_data": {
-                "use": "shooting",
-                "class": "Bullet",
-                "pos": [0,0],
-                "name": "ball",
-                "tag": "test",
-                "path": "bullet.png",
-                "layer": 5,
-                "size": [30, 90],
-                "effect": {
-                    "use":"shooting",
-                    "class": "BulletEffect",
-                    "pos": [0,0],
-                    "name": "effect",
-                    "tag": "effect",
-                    "path": "bomb.PNG",
-                    "layer":5,
-                    "size": [180,60]
-                }
-            },
-            "kid": [
-                
-            ]
-        },
-        {"use": "shooting","class": "Base", "pos" : [200,400], "name" : "base", "tag": "goal", "path" : "base.png", "layer":4},
-
-        {
-            "use": "shooting",
-            "class": "Bar1",
-            "pos": [100,100],
-            "name" : "bar1",
-            "layer": 7,
-            "path": "bg_sample3.png",
-            "size": [500, 35]
-        },
-
-        {
-            "use": "shooting",
-            "class": "Bar2",
-            "pos": [100,100],
-            "name" : "bar2",
-            "layer": 6,
-            "path": "bg_sample4.png",
-            "size": [500, 35]
-        },
-
-        {
-            "use": "shooting",
-            "class": "Counter",
-            "pos":[100,100],
-            "name": "counter",
-            "layer": 6,
-            "text": "000",
-            "text_size": 100,
-            "TTF": null,
-            "color": {"red": 255, "green": 255, "blue": 255, "trans": 30},
-            "antialias": true,
-            "count": 40
-
-        },
-
-        {
-            "use": "shooting",
-            "class": "GameOverText",
-            "pos":[300,200],
-            "name": "winner",
-            "layer": 6,
-            "text": "Win: ",
-            "text_size": 300,
-            "TTF": null,
-            "color": {"red": 255, "green": 255, "blue": 255, "trans": 0},
-            "antialias": true
-        },
-
-        {
-            "use": "shooting",
-            "class": "GameOverText",
-            "pos":[300,200],
-            "name": "over_select1",
-            "layer": 6,
-            "text": "Continue",
-            "text_size": 100,
-            "TTF": null,
-            "color": {"red": 255, "green": 255, "blue": 255, "trans": 0},
-            "antialias": true
-        },
-
-        {
-            "use": "shooting",
-            "class": "GameOverText",
-            "pos":[300,200],
-            "name": "over_select2",
-            "layer": 6,
-            "text": "Back Title",
-            "text_size": 100,
-            "TTF": null,
-            "color": {"red": 255, "green": 255, "blue": 255, "trans": 0},
-            "antialias": true
+          "use": "shooting",
+          "class": "Bat",
+          "pos": [
+            0,
+            0
+          ],
+          "name": "bat",
+          "tag": "Bat",
+          "path": "bat_red.png",
+          "layer": 6,
+          "speed": 7
         }
-
-    ],
-    "grp":
-    [
-        {
-            "use": "shooting",
-            "class": "HPbar",
-            "name": "group",
-            "objects": {
-                "base": ["base"],
-                "bar1": ["bar1"],
-                "bar2": ["bar2"]
-            } 
-        },
-
-        {
-            "use": "shooting",
-            "class": "GameOverGroup",
-            "name": "over_group",
-            "objects": {
-                "base": ["base"],
-                "counter": ["counter"],
-                "text": ["winner"],
-                "select1": ["over_select1"],
-                "select2": ["over_select2"],
-                "attack": ["attack"],
-                "defence": ["defence"]
-
-            }
+      ]
+    },
+    {
+      "use": "shooting",
+      "class": "Background",
+      "pos": [
+        0,
+        0
+      ],
+      "name": "bg",
+      "tag": "bg",
+      "path": "background.png",
+      "layer": 0
+    },
+    {
+      "use": "shooting",
+      "class": "Attack",
+      "pos": [
+        -309,
+        -224
+      ],
+      "name": "attack",
+      "tag": "Test",
+      "path": "fighter_c.png",
+      "size": [
+        110,
+        110
+      ],
+      "layer": 5,
+      "speed": 15,
+      "ball_data": {
+        "use": "shooting",
+        "class": "Bullet",
+        "pos": [
+          0,
+          0
+        ],
+        "name": "ball",
+        "tag": "test",
+        "path": "bullet.png",
+        "layer": 5,
+        "size": [
+          30,
+          90
+        ],
+        "effect": {
+          "use": "shooting",
+          "class": "BulletEffect",
+          "pos": [
+            0,
+            0
+          ],
+          "name": "effect",
+          "tag": "effect",
+          "path": "bomb.PNG",
+          "layer": 5,
+          "size": [
+            180,
+            60
+          ]
         }
-    ],
-
-    "start_camera" : "camera"
-
+      },
+      "kid": []
+    },
+    {
+      "use": "shooting",
+      "class": "Base",
+      "pos": [
+        200,
+        400
+      ],
+      "name": "base",
+      "tag": "goal",
+      "path": "base.png",
+      "layer": 4
+    },
+    {
+      "use": "shooting",
+      "class": "Bar1",
+      "pos": [
+        100,
+        100
+      ],
+      "name": "bar1",
+      "layer": 7,
+      "path": "bg_sample3.png",
+      "size": [
+        500,
+        35
+      ]
+    },
+    {
+      "use": "shooting",
+      "class": "Bar2",
+      "pos": [
+        100,
+        100
+      ],
+      "name": "bar2",
+      "layer": 6,
+      "path": "bg_sample4.png",
+      "size": [
+        500,
+        35
+      ]
+    },
+    {
+      "use": "shooting",
+      "class": "Counter",
+      "pos": [
+        100,
+        100
+      ],
+      "name": "counter",
+      "layer": 6,
+      "text": "000",
+      "text_size": 100,
+      "TTF": null,
+      "color": {
+        "red": 255,
+        "green": 255,
+        "blue": 255,
+        "trans": 30
+      },
+      "antialias": true,
+      "count": 40
+    },
+    {
+      "use": "shooting",
+      "class": "GameOverText",
+      "pos": [
+        300,
+        200
+      ],
+      "name": "winner",
+      "layer": 6,
+      "text": "Win: ",
+      "text_size": 300,
+      "TTF": null,
+      "color": {
+        "red": 255,
+        "green": 255,
+        "blue": 255,
+        "trans": 0
+      },
+      "antialias": true
+    },
+    {
+      "use": "shooting",
+      "class": "GameOverText",
+      "pos": [
+        300,
+        200
+      ],
+      "name": "over_select1",
+      "layer": 6,
+      "text": "Continue",
+      "text_size": 100,
+      "TTF": null,
+      "color": {
+        "red": 255,
+        "green": 255,
+        "blue": 255,
+        "trans": 0
+      },
+      "antialias": true
+    },
+    {
+      "use": "shooting",
+      "class": "GameOverText",
+      "pos": [
+        300,
+        200
+      ],
+      "name": "over_select2",
+      "layer": 6,
+      "text": "Back Title",
+      "text_size": 100,
+      "TTF": null,
+      "color": {
+        "red": 255,
+        "green": 255,
+        "blue": 255,
+        "trans": 0
+      },
+      "antialias": true
+    }
+  ],
+  "grp": [
+    {
+      "use": "shooting",
+      "class": "HPbar",
+      "name": "group",
+      "objects": {
+        "base": [
+          "base"
+        ],
+        "bar1": [
+          "bar1"
+        ],
+        "bar2": [
+          "bar2"
+        ]
+      }
+    },
+    {
+      "use": "shooting",
+      "class": "GameOverGroup",
+      "name": "over_group",
+      "objects": {
+        "base": [
+          "base"
+        ],
+        "counter": [
+          "counter"
+        ],
+        "text": [
+          "winner"
+        ],
+        "select1": [
+          "over_select1"
+        ],
+        "select2": [
+          "over_select2"
+        ],
+        "attack": [
+          "attack"
+        ],
+        "defence": [
+          "defence"
+        ]
+      }
+    }
+  ],
+  "start_camera": "camera"
 }

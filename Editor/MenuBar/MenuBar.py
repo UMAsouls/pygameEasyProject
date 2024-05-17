@@ -62,7 +62,7 @@ class MenuBar(IMenuBar):
         
         if(self._file_panel_visible):
             self._file_panel = UIPanel(
-                self._file_panel_rect, manager=self._manager
+                self._file_panel_rect, 5, manager=self._manager
             )
         
             i = 0

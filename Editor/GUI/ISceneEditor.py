@@ -31,3 +31,7 @@ class ISceneEditor(ABC):
     @abstractmethod
     def data_change(self, key: str, idx: int, data: int | str) -> None:
         pass
+    
+    @abstractmethod
+    def save_scene(self) -> None:
+        pass

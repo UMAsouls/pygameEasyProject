@@ -26,6 +26,7 @@ from Inspector.Inspector import Inspector
 from SceneEditor.SceneEditor import SceneEditor
 from ObjectBar.ObjectBar import ObjectBar
 from Explorer.Explorer import Explorer
+from MenuBar.MenuBar import MenuBar
 
 #from pygameEasy.DependencyMaker import Dependency
     
@@ -70,10 +71,24 @@ def main():
     screen = pygame.display.set_mode([1920,1080])
     sc_rect = screen.get_rect()
     
+    #メニューバー
+    menu_size = (
+        sc_rect.width,
+        sc_rect.height*1//20
+    )
+    menu_topleft = (
+        0,
+        0
+    )
+    menu_rect = pygame.Rect(
+        menu_topleft,
+        menu_size
+    )
+    
     #エミュレータ設定
     em_size = (
         sc_rect.width*3//5,
-        sc_rect.height*3//5
+        sc_rect.height*3//5 
     )
     emulate_window = pygame.Surface(em_size)
     em_rect = emulate_window.get_rect()
@@ -86,7 +101,7 @@ def main():
     )
     in_topleft = (
         sc_rect.width*4//5,
-        0
+        menu_size[1]
     )
     in_rect = pygame.Rect(
         in_topleft,
@@ -100,7 +115,7 @@ def main():
     )
     bar_topleft = (
         0,
-        0
+        menu_size[1]
     )
     bar_rect = pygame.Rect(
         bar_topleft,
@@ -110,16 +125,18 @@ def main():
     #エクスプローラー設定
     exp_size = (
         sc_rect.width,
-        sc_rect.height*2//5
+        sc_rect.height*2//5 - menu_size[1]
     )
     exp_topleft = (
         0,
-        sc_rect.height*3//5
+        sc_rect.height*3//5 + menu_size[1]
     )
     exp_rect = pygame.Rect(
         exp_topleft,
         exp_size
     )
+    
+    
     
     
     ui_manager = UIManager(sc_rect.size,"theme.json")
@@ -130,7 +147,11 @@ def main():
     inspector = Inspector(ui_manager, in_rect)
     obj_bar = ObjectBar(ui_manager, bar_rect)
     explorer = Explorer(ui_manager,exp_rect)
-    editor = GUI(project,ui_manager,obj_bar,inspector,scene_editor,emulator,explorer)
+    menubar = MenuBar(ui_manager, menu_rect)
+    editor = GUI(
+        project,ui_manager,obj_bar,inspector,scene_editor,emulator,explorer,
+        menubar
+        )
     clock = pygame.Clock()
     
     

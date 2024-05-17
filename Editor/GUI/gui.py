@@ -8,6 +8,7 @@ from .Iinspector import Iinspector
 from .ISceneEditor import ISceneEditor
 from .IEmulator import IEmulator
 from .IExplorer import IExplorer
+from .IMenuBar import IMenuBar
 
 from __const import *
 
@@ -23,7 +24,8 @@ class GUI:
         inspector: Iinspector, 
         scene_editor: ISceneEditor, 
         emulator: IEmulator,
-        explorer: IExplorer
+        explorer: IExplorer,
+        menubar: IMenuBar
         ) -> None:
         
         self.project = project
@@ -35,7 +37,8 @@ class GUI:
         self.obj_bar = obj_bar
         self.emulator = emulator
         self.explorer = explorer
-        
+        self.menubar = menubar
+               
     def recreate_ui(self) -> None:
         """ui再構成
         """
@@ -43,6 +46,7 @@ class GUI:
         self.obj_bar.recreate_ui()
         self.inspector.recreate_ui()
         self.explorer.recreate_ui()
+        self.menubar.recreate_ui()
         
         
     def start(self):
@@ -52,12 +56,10 @@ class GUI:
         self.scene_editor.scene_load(self.project["start_scene"])
         
         self.obj_bar.obj_load(self.scene_editor.get_scene()["obj"])
-        self.obj_bar.recreate_ui()
-        
-        self.inspector.recreate_ui()
         
         self.explorer.load(self.project["path"])
-        self.explorer.recreate_ui()
+        
+        self.recreate_ui()
         
     def process_events(self, event: pygame.event.Event):
         """イベントの処理
@@ -75,6 +77,8 @@ class GUI:
         
         self.explorer.process_event(event)
         
+        self.menubar.process_event(event)
+        
         #オブジェクトデータ変更時イベント
         if event.type == CHANGE_DATA_EVENT:
             key = event.key
@@ -86,8 +90,8 @@ class GUI:
         if event.type == CHANGE_OBJ_POS_EVENT:
             pos = event.pos
             self.emulator.obj_pos_set(pos)
-            self.scene_editor.data_change("pos", 0, pos[0])
-            self.scene_editor.data_change("pos", 1, pos[1])
+            self.scene_editor.data_change("pos", 0, int(pos[0]))
+            self.scene_editor.data_change("pos", 1, int(pos[1]))
             self.inspector.pos_data_change(pos)
             
         #シーン変更イベント
@@ -100,6 +104,9 @@ class GUI:
             
         if event.type == RECREATE_UI_EVENT:
             self.recreate_ui()
+            
+        if event.type == SCENE_SAVE_EVENT:
+            self.scene_editor.save_scene()
             
         
     def update(self, dt: float): 

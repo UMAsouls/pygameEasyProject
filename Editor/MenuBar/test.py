@@ -129,6 +129,7 @@ def main():
         exp_size
     )
     
+    #メニューバー
     menu_size = (
         sc_rect.width,
         sc_rect.height*1//20

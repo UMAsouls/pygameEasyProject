@@ -12,6 +12,10 @@ class SceneEditor(I0):
         self._project_path: str = path
         """プロジェクトのパス
         """
+        self._scene_path: str = ""
+        """シーンのパス
+        """
+        
         self._scene: dict[str, str|int|list|dict] = {}
         """シーンのjsonデータ
         """
@@ -31,6 +35,8 @@ class SceneEditor(I0):
         Args:
             path (str): シーンのパス
         """
+        self._scene_path = path
+        
         with open(self._project_path+"/scene/"+path) as f:
             self._scene = json.load(f)
             
@@ -116,6 +122,11 @@ class SceneEditor(I0):
             d[key_list[-1]][idx] = data
         else:
             d[key_list[-1]] = data
+            
+            
+    def save_scene(self) -> None:
+        with open(f"{self._project_path}/scene/{self._scene_path}", 'w') as f:
+            json.dump(self._scene, f, indent=2)
                     
                 
             
