@@ -7,6 +7,7 @@ from .IObjectBar import IObjectBar
 from .Iinspector import Iinspector
 from .ISceneEditor import ISceneEditor
 from .IEmulator import IEmulator
+from .IExplorer import IExplorer
 
 from __const import *
 
@@ -32,6 +33,7 @@ class GUI:
         self.inspector = inspector
         self.obj_bar = obj_bar
         self.emulator = emulator
+        #self.explorer = explorer
         
     def start(self):
         """スタート時処理
@@ -58,18 +60,26 @@ class GUI:
         
         self.inspector.process_event(event)
         
+        #オブジェクトデータ変更時イベント
         if event.type == CHANGE_DATA_EVENT:
             key = event.key
             idx = event.idx
             data = event.data
             self.scene_editor.data_change(key, idx, data)
             
+        #オブジェクト位置変更時イベント
         if event.type == CHANGE_OBJ_POS_EVENT:
             pos = event.pos
             self.emulator.obj_pos_set(pos)
             self.scene_editor.data_change("pos", 0, pos[0])
             self.scene_editor.data_change("pos", 1, pos[1])
             self.inspector.pos_data_change(pos)
+        
+        
+        if event.type == CHANGE_SCENE_EVENT:
+            path = event.path
+            print(path)
+            
         
     def update(self, dt: float): 
         self.emulator.update()       

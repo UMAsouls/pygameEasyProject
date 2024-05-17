@@ -13,7 +13,6 @@ def get_parent_path(level):
 
 PROJECT_PATH = os.path.dirname(os.getcwd())
 
-@injector.singleton
 class SceneLoader(Singleton):
     _is_first: bool = True
     _scene_data: list[str] = []
