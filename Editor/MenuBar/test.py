@@ -1,38 +1,32 @@
-import os
+from pygame import Rect,Event
 import pygame
 from pygame.locals import *
-from typing import Any
-import json
+import os
 import sys
+import json
 
 from pygame_gui import UIManager
 
-#確実にEditorの部分を実行ディレクトリにするために必要
-#例えばcmdでpygameEasyProjectがカレントディレクトリでやるとそこが実行ディレクトリになる
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-#いつかモジュール化して消す
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from pygameEasy import *
+from MenuBar import MenuBar
 
-#sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from __const import CHANGE_SCENE_EVENT, SCENE_SAVE_EVENT, RECREATE_UI_EVENT
 
-import startup
-from Emulator.emulator import Emulator
-from GUI import GUI
-from Inspector.Inspector import Inspector
-from SceneEditor.SceneEditor import SceneEditor
-from ObjectBar.ObjectBar import ObjectBar
-from Explorer.Explorer import Explorer
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-#from pygameEasy.DependencyMaker import Dependency
+print(os.getcwd())
+
+with open("test_data/config.json") as f:
+    config: dict[str, str|int] = json.loads(f.read())
     
-PROJECT_PATH = os.path.abspath(startup.start())
+PROJECT_PATH: str = config["project_path"]
 
 #更新処理
-def update(emulator: Emulator, editor: GUI, dt: float) -> None:
+def update(manager: UIManager, menubar: MenuBar, dt: float) -> None:
     """更新処理
 
         エディタの更新処理をここでまとめて行う
@@ -52,10 +46,25 @@ def update(emulator: Emulator, editor: GUI, dt: float) -> None:
             if(event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
-
-        editor.process_events(event)
+                
+        if event.type == CHANGE_SCENE_EVENT:
+            print(event.path, "scene")
+            
+        if event.type == RECREATE_UI_EVENT:
+            manager.clear_and_reset()
+            menubar.recreate_ui()
+            
+        if event.type == SCENE_SAVE_EVENT:
+            print("save")
+                
+        manager.process_events(event)
+        menubar.process_event(event)
         
-    editor.update(dt)
+
+        #editor.process_events(event)
+        
+    #editor.update(dt)
+    manager.update(dt)
     
 def main():
     """main
@@ -64,7 +73,7 @@ def main():
         project: dict[str, str|int] = json.loads(f.read())
     
     pygame.init()
-    pygame.display.set_caption("Editor")
+    #pygame.display.set_caption("Editor")
     
     #データ設定
     screen = pygame.display.set_mode([1920,1080])
@@ -107,7 +116,6 @@ def main():
         bar_size
     )
     
-    #エクスプローラー設定
     exp_size = (
         sc_rect.width,
         sc_rect.height*2//5
@@ -121,30 +129,48 @@ def main():
         exp_size
     )
     
+    menu_size = (
+        sc_rect.width,
+        sc_rect.height*1//20
+    )
+    menu_topleft = (
+        0,
+        0
+    )
+    menu_rect = pygame.Rect(
+        menu_topleft,
+        menu_size
+    )
     
-    ui_manager = UIManager(sc_rect.size,"theme.json")
+    
+    ui_manager = UIManager(sc_rect.size,"test_data/theme.json")
     
     #モジュール作成
+    """
     emulator = Emulator(PROJECT_PATH, emulate_window, em_rect)
     scene_editor = SceneEditor(PROJECT_PATH)
     inspector = Inspector(ui_manager, in_rect)
     obj_bar = ObjectBar(ui_manager, bar_rect)
-    explorer = Explorer(ui_manager,exp_rect)
-    editor = GUI(project,ui_manager,obj_bar,inspector,scene_editor,emulator,explorer)
+    editor = GUI(project,ui_manager,obj_bar,inspector,scene_editor,emulator)
+    """
+    #explorer = Explorer(ui_manager,exp_rect)
+    menubar = MenuBar(ui_manager, menu_rect)
     clock = pygame.Clock()
     
     
     #初期セットアップ
-    editor.start()
+    #editor.start()
+    menubar.recreate_ui()
     
     #メインループ
     while(True):
         dt = clock.tick(60) /1000.0
-        update(emulator, editor, dt)
+        update(ui_manager, menubar, dt)
         
         screen.fill(ui_manager.ui_theme.get_colour('normal_bg'))
         screen.blit(emulate_window, em_rect)
-        editor.draw(screen)
+        #editor.draw(screen)
+        ui_manager.draw_ui(screen)
         
         pygame.display.update()
     

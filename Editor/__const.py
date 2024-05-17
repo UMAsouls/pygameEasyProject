@@ -11,5 +11,7 @@ CHANGE_SCENE_EVENT = custom_type()
 
 RECREATE_UI_EVENT = custom_type()
 
+SCENE_SAVE_EVENT = custom_type()
+
 def recreate_event_post() -> None:
     pygame.event.post(Event(RECREATE_UI_EVENT))
