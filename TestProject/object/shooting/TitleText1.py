@@ -7,10 +7,10 @@ from pygameEasy import *
 
 class TitleText1(TextObject):
     def start(self) -> None:
-        size = pygame.display.get_surface().get_size()
+        #size = pygame.display.get_surface().get_size()
         
-        self.change_pivot("center")
-        self.position = Vector(size[0]//2, self.position.y)
+        #self.change_pivot("center")
+        #self.position = Vector(size[0]//2, self.position.y)
         
         select = self.EventBinder("select")
         select.set_func(self.color_change_red)

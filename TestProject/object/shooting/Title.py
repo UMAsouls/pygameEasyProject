@@ -8,7 +8,7 @@ from pygameEasy import *
 class Title(GameObject):
     
     def start(self):
-        self.size = pygame.display.get_surface().get_size()
+        #self.size = pygame.display.get_surface().get_size()
         
         self.music = Music.get_instance()
         

@@ -51,6 +51,12 @@ class MenuBar(IMenuBar):
         
         self._file_panel_visible: int = 0
         
+        self.run_button: UIButton = None
+        self.run_button_rect = self._bu_rect.copy()
+        self.run_button_rect.left = self._file_bu_rect.left + 5
+        
+        #self._rect_panel: UIPanel = None
+        
         
         
     def recreate_ui(self) -> None:
@@ -96,6 +102,10 @@ class MenuBar(IMenuBar):
             if(event.ui_element == self._file_button) :
                 self._file_panel_visible = 1
                 recreate_event_post()
+                
+            if(event.ui_element == self.run_button):
+                pass
+                
         
         
         

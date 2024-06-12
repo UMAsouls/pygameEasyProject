@@ -60,8 +60,8 @@
       "use": "shooting",
       "class": "Attack",
       "pos": [
-        0,
-        0
+        -179,
+        -185
       ],
       "name": "attack",
       "tag": "Test",
@@ -71,7 +71,7 @@
         110
       ],
       "layer": 5,
-      "speed": 15,
+      "speed": 50,
       "ball_data": {
         "use": "shooting",
         "class": "Bullet",

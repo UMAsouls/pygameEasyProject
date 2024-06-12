@@ -93,6 +93,7 @@ def main():
     emulate_window = pygame.Surface(em_size)
     em_rect = emulate_window.get_rect()
     em_rect.left = sc_rect.width // 5
+    em_rect.top = menu_size[1]
     
     #インスペクター設定
     in_size = (
