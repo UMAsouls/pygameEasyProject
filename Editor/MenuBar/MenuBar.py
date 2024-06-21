@@ -53,7 +53,7 @@ class MenuBar(IMenuBar):
         
         self.run_button: UIButton = None
         self.run_button_rect = self._bu_rect.copy()
-        self.run_button_rect.left = self._file_bu_rect.left + 5
+        self.run_button_rect.left = self._file_bu_rect.right + 5
         
         #self._rect_panel: UIPanel = None
         
@@ -78,6 +78,10 @@ class MenuBar(IMenuBar):
                 UIButton(
                     rect, k, self._manager, self._file_panel
                 )
+                
+        self.run_button = UIButton(
+            self.run_button_rect, "Run", self._manager, self._panal
+        )
         
         
         
@@ -104,7 +108,7 @@ class MenuBar(IMenuBar):
                 recreate_event_post()
                 
             if(event.ui_element == self.run_button):
-                pass
+                print("run")
                 
         
         

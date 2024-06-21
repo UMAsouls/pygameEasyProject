@@ -108,6 +108,9 @@ class GUI:
         if event.type == SCENE_SAVE_EVENT:
             self.scene_editor.save_scene()
             
+        if event.type == RUN_EVENT:
+            print("Run")
+            
         
     def update(self, dt: float): 
         self.emulator.update()       

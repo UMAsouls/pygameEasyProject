@@ -16,8 +16,8 @@
       "use": "shooting",
       "class": "Defense",
       "pos": [
-        0,
-        0
+        428,
+        154
       ],
       "name": "defence",
       "tag": "Test",
@@ -60,8 +60,8 @@
       "use": "shooting",
       "class": "Attack",
       "pos": [
-        -179,
-        -185
+        422,
+        453
       ],
       "name": "attack",
       "tag": "Test",
@@ -71,7 +71,7 @@
         110
       ],
       "layer": 5,
-      "speed": 50,
+      "speed": 10,
       "ball_data": {
         "use": "shooting",
         "class": "Bullet",
