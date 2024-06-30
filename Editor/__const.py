@@ -18,3 +18,9 @@ STOP_EVENT = custom_type()
 
 def recreate_event_post() -> None:
     pygame.event.post(Event(RECREATE_UI_EVENT))
+    
+def run_event_post() -> None:
+    pygame.event.post(Event(RUN_EVENT))
+    
+def stop_event_post() -> None:
+    pygame.event.post(Event(STOP_EVENT))

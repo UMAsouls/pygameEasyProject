@@ -12,7 +12,7 @@ from pygame_gui.elements import \
     
 from Editor.GUI.IMenuBar import IMenuBar
 
-from __const import SCENE_SAVE_EVENT,recreate_event_post
+from __const import SCENE_SAVE_EVENT,recreate_event_post,run_event_post,stop_event_post
     
 class MenuBar(IMenuBar):
     """メニューバー
@@ -108,7 +108,7 @@ class MenuBar(IMenuBar):
                 recreate_event_post()
                 
             if(event.ui_element == self.run_button):
-                print("run")
+                run_event_post()
                 
         
         

@@ -22,14 +22,18 @@
       "name": "title",
       "tag": "background",
       "path": "title.png",
-      "layer": 3
+      "layer": 3,
+      "size": [
+        1980,
+        1080
+      ]
     },
     {
       "use": "shooting",
       "class": "TitleText1",
       "pos": [
-        518,
-        439
+        793,
+        646
       ],
       "name": "text1",
       "tag": "taxt1",
@@ -49,8 +53,8 @@
       "use": "shooting",
       "class": "TitleText2",
       "pos": [
-        615,
-        597
+        858,
+        787
       ],
       "name": "text2",
       "tag": "text2",
