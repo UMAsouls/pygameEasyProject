@@ -1,7 +1,7 @@
 import os
 
 
-for i in os.listdir("C:/Users/admin/pygameEasyProject/TestProject/object/default"):
+for i in os.listdir(os.path.dirname(__file__)):
     if(i[0] == "_" or i[0] == "."):
         continue
     exec(f"from object.default import {i}"[0:-3])

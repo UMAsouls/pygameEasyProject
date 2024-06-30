@@ -55,7 +55,3 @@ class SceneLoader(Singleton):
         return tmp
     
 
-from pygameEasy.DependencyConfig import Config
-
-configs = [
-]

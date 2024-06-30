@@ -178,9 +178,5 @@ class Drawer(pygame.sprite.LayeredDirty,Singleton):
         super().remove(*sprites)
            
             
-from pygameEasy.DependencyConfig import Config
-
-configs = [
-]
             
         

@@ -54,9 +54,4 @@ class Key(Singleton):
             if(event.key == key_dict[k]):
                 self._key[k]["up"] = True
                 self._key[k]["repeat"] = False
-                
-from pygameEasy.DependencyConfig import Config
-
-configs = [
-]
-                        
+                    

@@ -3,7 +3,6 @@ from pygame.mixer import *
 from pygame.locals import *
 
 from pygameEasy.Singleton import Singleton
-from pygameEasy.DependencyConfig import Config
 
 BGM_END = 25
 BGM_CHANGE = 26
@@ -80,5 +79,3 @@ class Music(Singleton):
             self._bgm_channel.play(self._bgm_loop)
         
             
-configs = [
-]    

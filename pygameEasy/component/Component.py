@@ -154,12 +154,5 @@ class Component(I0,I2,I3, LayeredDirty):
             super().remove(i.component)
         
     
-    
-from pygameEasy.DependencyConfig import Config
 
-configs = [
-    Config(I0, Component),
-    Config(I2, Component),
-    Config(I3, Component)
-]
         

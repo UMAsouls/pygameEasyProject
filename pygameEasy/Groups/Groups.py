@@ -84,7 +84,3 @@ class Groups(Singleton):
         for i in self._groups.values():
             i.event_check()
     
-from pygameEasy.DependencyConfig import Config
-
-configs = [
-]
